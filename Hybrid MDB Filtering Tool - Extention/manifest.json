@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Hybrid MDB Filtering Tool",
+  "version": "1.0",
+  "description": "Filter MDB posts on localhost",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "js": ["content.js"],
+      "matches": ["http://127.0.0.1:5501/*"]
+    }
+  ]
+}

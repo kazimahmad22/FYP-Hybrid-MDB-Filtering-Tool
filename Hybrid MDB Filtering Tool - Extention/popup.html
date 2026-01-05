@@ -4,10 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="popup.css">
-    <title>Document</title>
+    <title>MDB Filtering Tool</title>
 </head>
 <body>
-    <h1>Hello world</h1>
+    <div class="container">
+        <header>
+            <h1>MDB Filtering Tool</h1>
+        </header>
+
+        <section id="keyword-filtering">
+            <h2>Keyword-Based Filtering</h2>
+            <div class="setting-row">
+                <label for="filter-toggle">Enable Filtering</label>
+                <label class="switch">
+                    <input type="checkbox" id="filter-toggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </section>
+
+        <section id="keyword-management">
+            <h2>Manage Keywords</h2>
+            <div class="add-keyword">
+                <input type="text" id="keyword-input" placeholder="Add a new keyword">
+                <button id="add-keyword-btn">Add</button>
+            </div>
+            <ul id="keyword-list">
+                <!-- Keywords will be dynamically inserted here -->
+            </ul>
+        </section>
+
+        <section id="ai-classification" class="placeholder-section">
+            <h2>AI-Based Classification</h2>
+            <p>(Coming Soon)</p>
+        </section>
+        
+        <section id="export" class="placeholder-section">
+            <h2>Export Data</h2>
+             <button id="export-csv-btn">Export as CSV</button>
+        </section>
+
+    </div>
     <script src="popup.js"></script>
 </body>
 </html>

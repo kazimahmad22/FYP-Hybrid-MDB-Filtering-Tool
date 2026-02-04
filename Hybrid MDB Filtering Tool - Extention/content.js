@@ -13,25 +13,43 @@ function clearHighlighting() {
 function runFilter(keywords) {
     clearHighlighting(); // Clear previous highlights before applying new ones
 
-    const messages = document.querySelectorAll('.message');
+    const posts = document.querySelectorAll('.post');
     
-    // Highlight non-academic messages
-    messages.forEach((message) => {
-        if (keywords.some((keyword) => message.textContent.toLowerCase().includes(keyword))) {
-            message.style.backgroundColor = 'yellow'; // Changed to yellow for better visibility
+    // Create an array of RegExp objects from the keywords. 'i' flag makes them case-insensitive.
+    const regexPatterns = keywords.map(keyword => {
+        try {
+            return new RegExp(keyword, 'i');
+        } catch (e) {
+            console.warn(`Invalid regex pattern skipped: ${keyword}`);
+            return null;
+        }
+    }).filter(Boolean); // Filter out any null (invalid) patterns
+
+    academicMessages = []; // Reset the list for the new filter run
+
+    posts.forEach((post) => {
+        const messageElement = post.querySelector('.message');
+        const senderElement = post.querySelector('.sender');
+
+        if (messageElement && senderElement) {
+            const messageText = messageElement.textContent;
+            const isNonAcademic = regexPatterns.some((pattern) => pattern.test(messageText));
+
+            if (isNonAcademic) {
+                // Highlight non-academic messages
+                messageElement.style.backgroundColor = 'yellow';
+            } else {
+                // Otherwise, it's academic, so store it for export
+                academicMessages.push({
+                    name: senderElement.textContent.trim(),
+                    message: messageText.trim()
+                });
+            }
         }
     });
 
-    // Filter and store academic messages
-    const messagesNodeList = document.querySelectorAll('.message');
-    const messagesText = Array.from(messagesNodeList).map(e => e.textContent);
-
-    academicMessages = messagesText.filter(text =>
-        keywords.every(keyword => !text.toLowerCase().includes(keyword.toLowerCase()))
-    );
-
     console.clear(); // Clear console for clean output
-    console.log("*Academic Messages*");
+    console.log("*Academic Messages (Filtered with Regex)*");
     console.table(academicMessages);
 }
 

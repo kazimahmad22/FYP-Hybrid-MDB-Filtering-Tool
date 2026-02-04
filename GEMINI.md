@@ -1,49 +1,46 @@
 # Gemini Project Context: Hybrid MDB Filtering Tool
 
 ## Project Overview
+This project is a browser-based tool to enhance the Moderated Discussion Board (MDB) in an LMS. It filters non-academic "noise" (like "good", "done", "present") using **Hybrid** methods:
+1.  **Rule-Based**: Keywords and Regex (e.g., Phone numbers).
+2.  **AI-Based**: Machine Learning model trained on message context.
 
-This project is a browser-based tool designed to enhance the Moderated Discussion Board (MDB) within a Learning Management System (LMS). Its primary purpose is to automatically detect, filter, and highlight non-academic messages (e.g., "good," "done," "present") to improve productivity for faculty members.
+## 📅 Project Progress (As of February 4, 2026)
 
-The system consists of two main components:
-1.  **Mock MDB Interface (`MDB Interface/`)**: A static HTML/CSS/JS application that simulates the LMS discussion board environment. This is the target for the browser extension.
-2.  **Browser Extension (`Hybrid MDB Filtering Tool - Extention/`)**: A Chrome Extension that injects scripts into the mock MDB page. It provides a UI for managing filters and dynamically highlights or filters posts based on user-defined keywords.
+| Phase | Component | Status | Tech Stack |
+| :--- | :--- | :--- | :--- |
+| **Phase 1** | **Foundation** | ✅ Completed | HTML, CSS, Manifest V3 |
+| **Phase 2** | **Rule-Based Filter** | ✅ Completed | JavaScript, Regex |
+| **Phase 6** | **UI Redesign** | ✅ Completed | CSS (60-30-10 Neutral) |
+| **Phase 3** | **Dataset Creation** | ✅ Completed | Node.js (Synthetic Generation) |
+| **Phase 4** | **AI Classification** | ⏳ **Next Up** | Node.js (Natural/Bayes), Express |
+| **Phase 5** | **Dashboard** | 🔴 Pending | Chart.js |
 
-The project plan includes implementing two filtering approaches: a simple keyword-based system (currently in progress) and a more advanced AI/NLP classifier.
+## 🛠 Feature Details
 
-### Core Technologies
-*   **Frontend**: HTML5, CSS3, JavaScript (ES6+)
-*   **Browser Extension**: Chrome Extension API (Manifest V3)
-*   **Planned for AI/Data**: Python, pandas, scikit-learn
+### ✅ Dataset Creation (Phase 3) - COMPLETE
+*   **Source**: Synthetic generation using template injection (`Dataset/data_collector.js`).
+*   **Size**: 1,000 Messages.
+*   **Balance**: 50% Academic (Questions), 50% Non-Academic (Spam).
+*   **Format**: `labeled_messages.csv`.
 
-## Building and Running
+### ✅ UI Redesign (Phase 6) - COMPLETE
+*   **Theme**: Neutral, Minimal, Professional.
+*   **Palette**: Light Gray (`#f8f9fa`), White (`#fff`), Dark Text (`#343a40`), Black Accents (`#000`).
+*   **Typography**: Clean sans-serif (Inter/system-ui).
 
-This project does not have a conventional build step. To run it, you need to set up the two components concurrently.
+### ⏳ AI Classification (Phase 4) - PLANNED
+*   **Architecture Change**: Switched from Python to **Node.js** due to environment constraints.
+*   **Model**: Naive Bayes Classifier.
+*   **Server**: Local Express API (`localhost:3000/predict`).
 
-### 1. Run the Mock MDB Interface
-The mock interface is a static website. You must serve the `MDB Interface/` directory from a local web server. The extension is configured to run on `http://127.0.0.1:5501`.
+## 📂 Project Structure
+*   `MDB Interface/` - Mock LMS Website.
+*   `Hybrid MDB Filtering Tool - Extention/` - Browser Extension.
+*   `Dataset/` - Generators and CSV Data.
+*   `AI_Model/` - (Coming Soon) Training scripts and API.
 
-**Example using Python's built-in web server:**
-```bash
-# Navigate to the MDB Interface directory
-cd "MDB Interface"
-
-# Start the server on port 5501
-python -m http.server 5501
-```
-
-### 2. Load the Browser Extension
-1.  Open a Chromium-based browser (like Google Chrome).
-2.  Navigate to `chrome://extensions`.
-3.  Enable **"Developer mode"** using the toggle switch in the top-right corner.
-4.  Click on the **"Load unpacked"** button.
-5.  Select the `Hybrid MDB Filtering Tool - Extention/` directory.
-
-Once both are running, navigate to `http://127.0.0.1:5501` in your browser. The extension will be active, and you can use its icon in the toolbar to open the management popup.
-
-## Development Conventions
-
-*   **Extension Logic**: The core logic is separated into a popup script (`popup.js`) for UI and data management, and a content script (`content.js`) for DOM manipulation on the target page.
-*   **Communication**: The popup and content script communicate via `chrome.storage.sync`. `popup.js` writes settings (enabled status, keywords) to storage, and `content.js` listens for these changes to dynamically update its behavior. For one-off actions like exporting data, the scripts use `chrome.tabs.sendMessage`.
-*   **DOM Targeting**: The `content.js` script targets `div` elements with the class `message` within the mock interface to apply its filtering logic.
-*   **Configuration**: The extension's behavior (e.g., target URL) is defined in `manifest.json`.
-*   **Styling**: The UI is styled with plain CSS. The popup has a fixed width, and styles for UI components like the toggle switch and keyword list are located in `popup.css`.
+## 🚀 How to Run
+1.  **Mock LMS**: `node -e "require('http').createServer(..."` (Runs on Port 5501).
+2.  **Extension**: Load unpacked extensions in Chrome.
+3.  **Coming Soon**: `node AI_Model/server.js` for intelligent filtering.

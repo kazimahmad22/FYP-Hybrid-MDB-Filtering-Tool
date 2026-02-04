@@ -10,7 +10,8 @@
   "content_scripts": [
     {
       "js": ["content.js"],
-      "matches": ["http://127.0.0.1:5501/*"]
+      "matches": ["<all_urls>"]
+
     }
   ]
 }

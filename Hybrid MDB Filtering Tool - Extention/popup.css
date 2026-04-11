@@ -50,7 +50,8 @@ section h2 {
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #868e96;
+    color: #545b62;
+    /* Improved contrast (5.6:1) */
     /* Muted label */
     margin-bottom: 15px;
     border: none;
@@ -103,7 +104,7 @@ section h2 {
 }
 
 input:checked+.slider {
-    background-color: #212529;
+    background-color: #000000;
     /* Black accent when active */
 }
 
@@ -121,41 +122,47 @@ input:checked+.slider:before {
 
 #keyword-input {
     flex-grow: 1;
-    padding: 10px 12px;
-    border: 1px solid #e9ecef;
+    padding: 12px;
+    /* Standard Input Padding */
+    border: 1px solid #dee2e6;
+    /* Standard Input Border */
     border-radius: 6px;
     background: #f8f9fa;
-    color: #212529;
+    color: #343a40;
     font-size: 14px;
     outline: none;
     transition: border 0.2s;
 }
 
 #keyword-input:focus {
-    border-color: #ced4da;
-    background: #fff;
+    border-color: #000000;
+    /* Standard Focus */
+    background: #ffffff;
+    outline: none;
 }
 
 button {
-    padding: 10px 16px;
+    padding: 12px 16px;
     border: none;
     background-color: #000000;
     /* Strong Accent */
-    color: white;
+    color: #ffffff;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     /* Bolder text */
-    transition: all 0.2s ease;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Standard Component Transition */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
-    background-color: #333333;
+    background-color: #212529;
     /* Slightly lighter on hover */
-    transform: translateY(-1px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    /* System Button Hover */
 }
 
 #keyword-list {
@@ -198,7 +205,8 @@ button:hover {
 
 /* Placeholder Sections */
 .placeholder-section p {
-    color: #adb5bd;
+    color: #545b62;
+    /* Improved contrast (5.6:1) */
     font-style: normal;
     font-size: 13px;
 }

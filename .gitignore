@@ -1,0 +1,35 @@
+# System/Developer Tool Folders
+.agents/
+.claude/
+.codex/
+.gemini/
+.opencode/
+.vscode/
+.idea/
+
+# Dependencies & Build Artifacts
+node_modules/
+package-lock.json
+AI_Model/node_modules/
+AI_Model/package-lock.json
+
+# Python Artifacts (Legacy Prototype)
+__pycache__/
+*.pyc
+prototype/__pycache__/
+prototype/*.pyc
+prototype/venv/
+.env
+
+# OS-Specific Junk
+.DS_Store
+Thumbs.db
+
+# Documentation & Internal Logs
+*.log
+cleanup_report.md
+verification_report.md
+design_audit_report.md
+implementation_plan.md
+walkthrough.md
+task.md

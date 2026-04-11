@@ -8,9 +8,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Default keywords
     const defaultKeywords = ["good", "present", "done", "sir"];
 
+    const aiFilterToggle = document.getElementById('ai-filter-toggle');
+
     // 1. Initialize UI from stored settings
-    chrome.storage.sync.get(['filteringEnabled', 'keywords'], (data) => {
+    chrome.storage.sync.get(['filteringEnabled', 'aiFilteringEnabled', 'keywords'], (data) => {
         filterToggle.checked = data.filteringEnabled !== false; // enabled by default
+        aiFilterToggle.checked = data.aiFilteringEnabled === true; // disabled by default
         const keywords = data.keywords || defaultKeywords;
         
         // If keywords were not in storage, save the defaults
@@ -25,6 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
     filterToggle.addEventListener('change', () => {
         const isEnabled = filterToggle.checked;
         chrome.storage.sync.set({ filteringEnabled: isEnabled });
+    });
+
+    aiFilterToggle.addEventListener('change', () => {
+        const isEnabled = aiFilterToggle.checked;
+        chrome.storage.sync.set({ aiFilteringEnabled: isEnabled });
     });
 
     // 3. Add new keyword
@@ -86,7 +94,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-     // 6. Export to CSV functionality
+    const viewDashboardBtn = document.getElementById('view-dashboard-btn');
+
+     // 6. View Dashboard Functionality
+     if (viewDashboardBtn) {
+        viewDashboardBtn.addEventListener('click', () => {
+            chrome.tabs.create({ url: chrome.runtime.getURL("dashboard.html") });
+        });
+     }
+
+     // 7. Export to CSV functionality
      exportBtn.addEventListener('click', () => {
         // Ask content script to get the academic messages
         chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
@@ -109,8 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function downloadCSV(messages) {
         // Add a header row
         const csvContent = "data:text/csv;charset=utf-8," 
-            + "Academic Messages\n" 
-            + messages.map(e => `"${e.replace(/"/g, '""')}"`).join("\n");
+            + "Sender,Message\n" 
+            + messages.map(e => `"${e.name.replace(/"/g, '""')}","${e.message.replace(/"/g, '""')}"`).join("\n");
 
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");

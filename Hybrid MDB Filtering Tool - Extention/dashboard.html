@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MDB Filtering Dashboard</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <!-- Local Chart.js to comply with Chrome Extension MV3 CSP -->
+    <script src="chart.js"></script>
+</head>
+<body>
+    <!-- Authentication Section -->
+    <div id="auth-container" class="auth-wrapper">
+        <!-- Login View -->
+        <div id="login-view" class="auth-card">
+            <h1>Welcome Back</h1>
+            <div id="login-alerts"></div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+            <p class="link-text">Don't have an account? <a href="#" id="show-register">Register here</a></p>
+        </div>
+
+        <!-- Register View -->
+        <div id="register-view" class="auth-card" style="display: none;">
+            <h1>Create Account</h1>
+            <div id="register-alerts"></div>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-name">Full Name</label>
+                    <input type="text" id="reg-name" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email Address</label>
+                    <input type="email" id="reg-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" placeholder="Create a password" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-role">Select Role</label>
+                    <select id="reg-role" required>
+                        <option value="student">Student</option>
+                        <option value="instructor">Instructor</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Register</button>
+            </form>
+            <p class="link-text">Already have an account? <a href="#" id="show-login">Login here</a></p>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Section (Hidden until Login) -->
+    <div id="dashboard-container" class="dashboard-container" style="display: none;">
+        <header>
+            <div class="header-top">
+                <h1>Filtering Performance Dashboard</h1>
+                <button id="btn-logout" class="btn-logout">Logout</button>
+            </div>
+            <p class="subtitle">Real-time analysis of Hybrid MDB Filtering</p>
+            
+            <nav class="dashboard-nav">
+                <button id="nav-analytics" class="nav-btn active">Performance Analytics</button>
+                <button id="nav-management" class="nav-btn">User Management</button>
+            </nav>
+        </header>
+
+        <div id="alert-container"></div>
+
+        <!-- Performance Analytics Section (Existing) -->
+        <div id="analytics-section">
+            <div class="stats-overview">
+                <div class="stat-card">
+                    <h3 id="total-msgs">0</h3>
+                    <p>Total Messages</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="academic-msgs">0</h3>
+                    <p>Academic (Safe)</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="regex-flagged">0</h3>
+                    <p>Regex Flagged</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="ai-flagged">0</h3>
+                    <p>AI Flagged</p>
+                </div>
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-box">
+                    <h2>Filtering Methods Comparison</h2>
+                    <canvas id="comparisonChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h2>Message Distribution</h2>
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Management & Prototype Sections (New) -->
+        <div id="management-section" style="display: none;">
+            <!-- Student View Card -->
+            <div id="student-view" class="card" style="display: none;">
+                <h3>Academic Discussion Board</h3>
+                <p style="margin-top: 10px; color: var(--muted-text);">Welcome to the MDB. You can view academic discussions here. Non-academic noise is being filtered in real-time.</p>
+                <div style="margin-top: 20px; padding: 15px; border-left: 4px solid var(--accent-black); background: var(--bg-color);">
+                    <strong>Ali:</strong> Sir, when will the quiz results be announced?
+                </div>
+            </div>
+
+            <!-- Instructor View Card -->
+            <div id="instructor-view" class="card" style="display: none;">
+                <h3>Instructor Panel: MDB Management</h3>
+                <p style="margin-top: 10px; color: var(--muted-text);">Filter and manage discussion board posts efficiently.</p>
+                <div style="margin-top: 20px;">
+                    <button class="btn-action" style="background: var(--accent-black); color: white;">Scan for Noise</button>
+                    <button class="btn-action" style="background: var(--muted-text); color: white;">Export Academic Queries</button>
+                </div>
+            </div>
+
+            <div id="admin-view" class="card">
+                <h3>User Management</h3>
+                <div class="user-info-container" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <p class="user-info">Logged in as: <strong id="current-user-name">Admin</strong> (<span class="role-badge" id="current-user-role">admin</span>)</p>
+                    <div class="view-switcher">
+                        <label for="view-as" style="font-size: 12px; margin-right: 5px;">Simulate View:</label>
+                        <select id="view-as" class="role-select" style="font-size: 12px; padding: 2px 5px;">
+                            <option value="admin">Admin</option>
+                            <option value="student">Student</option>
+                            <option value="instructor">Instructor</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="admin-create-user" style="margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                    <h4>Create New User</h4>
+                    <form id="create-user-form">
+                        <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+                            <input type="text" id="new-name" placeholder="Full Name" class="form-control" style="flex: 1;" required>
+                            <input type="email" id="new-email" placeholder="Email" class="form-control" style="flex: 1;" required>
+                            <input type="password" id="new-password" placeholder="Password" class="form-control" style="flex: 1;" required>
+                            <select id="new-role" class="form-control" style="flex: 1;">
+                                <option value="student">Student</option>
+                                <option value="instructor">Instructor</option>
+                            </select>
+                            <button type="submit" class="btn-action" style="background: var(--accent-black); color: white; width: auto;">Create User</button>
+                        </div>
+                    </form>
+                </div>
+
+                <p style="margin-top: 10px; color: var(--muted-text);">Manage system users, block/unblock accounts, and oversee activity.</p>
+                <table id="user-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-list">
+                        <!-- Users will be injected here via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <script src="dashboard.js"></script>
+</body>
+</html>

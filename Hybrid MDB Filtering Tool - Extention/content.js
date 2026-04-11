@@ -9,13 +9,13 @@ function clearHighlighting() {
     });
 }
 
-// The main function to filter and highlight messages
-function runFilter(keywords) {
+// Ensure the function is async to handle fetch calls
+async function runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled) {
     clearHighlighting(); // Clear previous highlights before applying new ones
 
     const posts = document.querySelectorAll('.post');
     
-    // Create an array of RegExp objects from the keywords. 'i' flag makes them case-insensitive.
+    // Create an array of RegExp objects from the keywords
     const regexPatterns = keywords.map(keyword => {
         try {
             return new RegExp(keyword, 'i');
@@ -25,32 +25,82 @@ function runFilter(keywords) {
         }
     }).filter(Boolean); // Filter out any null (invalid) patterns
 
-    academicMessages = []; // Reset the list for the new filter run
+    let stats = {
+        totalMessages: 0,
+        regexFlagged: 0,
+        aiFlagged: 0,
+        academic: 0
+    };
 
-    posts.forEach((post) => {
+    for (const post of posts) {
         const messageElement = post.querySelector('.message');
         const senderElement = post.querySelector('.sender');
 
         if (messageElement && senderElement) {
+            stats.totalMessages++;
             const messageText = messageElement.textContent;
-            const isNonAcademic = regexPatterns.some((pattern) => pattern.test(messageText));
+            let isNonAcademic = false;
+            let filterType = '';
 
+            // 1. Rule-Based Check (if enabled)
+            if (ruleBasedEnabled) {
+                isNonAcademic = regexPatterns.some((pattern) => pattern.test(messageText));
+                if (isNonAcademic) {
+                    filterType = 'regex';
+                }
+            }
+
+            // 2. AI-Based Check (if enabled and not already flagged by regex)
+            if (aiFilteringEnabled && !isNonAcademic) {
+                try {
+                    const response = await fetch('http://localhost:3000/predict', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ text: messageText }),
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data.label === 'non-academic') {
+                            isNonAcademic = true;
+                            filterType = 'ai';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error reaching AI model server:', error);
+                }
+            }
+
+            // Apply styling or store message
             if (isNonAcademic) {
                 // Highlight non-academic messages
-                messageElement.style.backgroundColor = 'yellow';
+                if (filterType === 'regex') {
+                    messageElement.style.backgroundColor = 'yellow'; // Rule-based: Yellow
+                    stats.regexFlagged++;
+                } else if (filterType === 'ai') {
+                    messageElement.style.backgroundColor = 'orange'; // AI-based: Orange
+                    stats.aiFlagged++;
+                }
             } else {
                 // Otherwise, it's academic, so store it for export
+                stats.academic++;
                 academicMessages.push({
                     name: senderElement.textContent.trim(),
                     message: messageText.trim()
                 });
             }
         }
-    });
+    }
 
-    console.clear(); // Clear console for clean output
-    console.log("*Academic Messages (Filtered with Regex)*");
+    // Save stats to local storage for the dashboard
+    chrome.storage.local.set({ filteringStats: stats });
+
+    console.clear();
+    console.log(`*Academic Messages (Filtered with Regex: ${ruleBasedEnabled}, AI: ${aiFilteringEnabled})*`);
     console.table(academicMessages);
+    console.log("Filtering Stats:", stats);
 }
 
 // --- Event Listeners ---
@@ -59,27 +109,33 @@ function runFilter(keywords) {
 chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'sync') {
         // Get the latest settings from storage and run the filter
-        chrome.storage.sync.get(['filteringEnabled', 'keywords'], (data) => {
-            if (data.filteringEnabled !== false) {
-                runFilter(data.keywords || []);
+        chrome.storage.sync.get(['filteringEnabled', 'aiFilteringEnabled', 'keywords'], (data) => {
+            const ruleBasedEnabled = data.filteringEnabled !== false;
+            const aiFilteringEnabled = data.aiFilteringEnabled === true;
+            
+            if (ruleBasedEnabled || aiFilteringEnabled) {
+                runFilter(data.keywords || [], ruleBasedEnabled, aiFilteringEnabled);
             } else {
                 clearHighlighting();
                 console.clear();
-                console.log("Filtering is disabled.");
+                console.log("All filtering is disabled.");
             }
         });
     }
 });
 
 // 2. Run the filter when the script is first injected
-chrome.storage.sync.get(['filteringEnabled', 'keywords'], (data) => {
+chrome.storage.sync.get(['filteringEnabled', 'aiFilteringEnabled', 'keywords'], (data) => {
     const defaultKeywords = ["good", "present", "done", "sir"];
     const keywords = data.keywords || defaultKeywords;
 
-    if (data.filteringEnabled !== false) {
-        runFilter(keywords);
+    const ruleBasedEnabled = data.filteringEnabled !== false;
+    const aiFilteringEnabled = data.aiFilteringEnabled === true;
+
+    if (ruleBasedEnabled || aiFilteringEnabled) {
+        runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled);
     } else {
-        console.log("Filtering is currently disabled.");
+        console.log("All filtering is currently disabled.");
     }
 });
 

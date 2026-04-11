@@ -1,0 +1,9 @@
+{
+  "name": "hybrid-mdb-filtering-tool",
+  "version": "1.0.0",
+  "description": "Hybrid Rule-based and AI-based Filtering Tool for MDB",
+  "scripts": {
+    "lms": "node lms_server.js",
+    "ai": "cd AI_Model && node server.js"
+  }
+}

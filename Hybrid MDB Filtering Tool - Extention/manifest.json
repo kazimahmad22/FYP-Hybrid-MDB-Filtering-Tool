@@ -4,6 +4,7 @@
   "version": "1.0",
   "description": "Filter MDB posts on localhost",
   "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": ["http://localhost:3000/*"],
   "action": {
     "default_popup": "popup.html"
   },

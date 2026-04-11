@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Hybrid MDB Filtering Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="header">
+            <div>
+                <h1>Hybrid MDB <span>{{ user.role.capitalize() }} Panel</span></h1>
+                <p class="user-info">Logged in as: <strong>{{ user.name }}</strong> (<span class="role-badge">{{ user.role }}</span>)</p>
+            </div>
+            <a href="{{ url_for('logout') }}" class="btn-logout" style="text-decoration: none; display: inline-block;">Logout</a>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}" style="margin-bottom: 20px;">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        {% if user.role == 'student' %}
+        <div id="student-view" class="card">
+            <h3>Academic Discussion Board</h3>
+            <p style="margin-top: 10px; color: var(--muted-text);">Welcome to the MDB. You can view academic discussions here. Non-academic noise is being filtered in real-time.</p>
+            <div style="margin-top: 20px; padding: 15px; border-left: 4px solid var(--accent-black); background: var(--bg-color);">
+                <strong>Ali:</strong> Sir, when will the quiz results be announced?
+            </div>
+        </div>
+        {% endif %}
+
+        {% if user.role == 'instructor' %}
+        <div id="instructor-view" class="card">
+            <h3>Instructor Panel: MDB Management</h3>
+            <p style="margin-top: 10px; color: var(--muted-text);">Filter and manage discussion board posts efficiently.</p>
+            <div style="margin-top: 20px;">
+                <button class="btn-action" style="background: var(--accent-black);">Scan for Noise</button>
+                <button class="btn-action" style="background: var(--muted-text);">Export Academic Queries</button>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if user.role == 'admin' %}
+        <div id="admin-view" class="card">
+            <h3>User Management</h3>
+            
+            <div id="admin-create-user" style="margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                <h4>Create New User</h4>
+                <form method="POST" action="{{ url_for('admin_create_user') }}">
+                    <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+                        <input type="text" name="name" placeholder="Full Name" class="form-control" style="flex: 1;" required>
+                        <input type="email" name="email" placeholder="Email" class="form-control" style="flex: 1;" required>
+                        <input type="password" name="password" placeholder="Password" class="form-control" style="flex: 1;" required>
+                        <select name="role" class="form-control" style="flex: 1;">
+                            <option value="student">Student</option>
+                            <option value="instructor">Instructor</option>
+                        </select>
+                        <button type="submit" class="btn-action" style="background: var(--accent-black); color: white;">Create User</button>
+                    </div>
+                </form>
+            </div>
+
+            <p style="margin-top: 10px; color: var(--muted-text);">Manage system users, block/unblock accounts, and oversee activity.</p>
+            <table id="user-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="user-list">
+                    {% for u in users %}
+                    {% if u.role != 'admin' %}
+                    <tr>
+                        <td>{{ u.id }}</td>
+                        <td>{{ u.name }}</td>
+                        <td>{{ u.email }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('update_role', user_id=u.id) }}" style="display: flex; gap: 5px;">
+                                <select name="role" class="role-select">
+                                    <option value="student" {% if u.role == 'student' %}selected{% endif %}>Student</option>
+                                    <option value="instructor" {% if u.role == 'instructor' %}selected{% endif %}>Instructor</option>
+                                </select>
+                                <button type="submit" class="btn-action btn-apply">Apply</button>
+                            </form>
+                        </td>
+                        {% set is_active = (u.status == 'active') %}
+                        <td><span class="{{ 'status-active' if is_active else 'status-blocked' }}">{{ u.status.upper() }}</span></td>
+                        <td>
+                            <a href="{{ url_for('toggle_status', user_id=u.id) }}" 
+                               class="btn-action {{ 'btn-block' if is_active else 'btn-unblock' }}" 
+                               style="text-decoration: none; display: inline-block;">
+                                {{ 'Block' if is_active else 'Unblock' }}
+                            </a>
+                            <a href="{{ url_for('delete_user', user_id=u.id) }}" 
+                               class="btn-action btn-delete" 
+                               onclick="return confirm('Are you sure?')"
+                               style="text-decoration: none; display: inline-block;">Delete</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

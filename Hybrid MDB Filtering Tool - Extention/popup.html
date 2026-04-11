@@ -34,14 +34,22 @@
             </ul>
         </section>
 
-        <section id="ai-classification" class="placeholder-section">
+        <section id="ai-classification">
             <h2>AI-Based Classification</h2>
-            <p>(Coming Soon)</p>
+            <div class="setting-row">
+                <label for="ai-filter-toggle">Enable AI Filtering</label>
+                <label class="switch">
+                    <input type="checkbox" id="ai-filter-toggle">
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <p style="font-size: 11px; margin-top: 5px; color: #6c757d;">Powered by Server Naïve Bayes</p>
         </section>
         
-        <section id="export" class="placeholder-section">
-            <h2>Export Data</h2>
-             <button id="export-csv-btn">Export as CSV</button>
+        <section id="dashboard-export" class="placeholder-section">
+            <h2>Data & Insights</h2>
+            <button id="view-dashboard-btn" style="margin-bottom: 10px;">View AI Dashboard</button>
+            <button id="export-csv-btn">Export Academic Messages (CSV)</button>
         </section>
 
     </div>

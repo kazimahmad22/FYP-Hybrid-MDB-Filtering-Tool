@@ -110,14 +110,14 @@ document.addEventListener('DOMContentLoaded', () => {
             chrome.tabs.sendMessage(tabs[0].id, { action: "getAcademicMessages" }, function(response) {
                 if (chrome.runtime.lastError) {
                     console.error(chrome.runtime.lastError.message);
-                    alert("Could not retrieve messages. Make sure you are on the correct page and have run the filter.");
+                    showGlobalToast("Could not retrieve messages. Make sure you are on the correct page and have run the filter.", "danger");
                     return;
                 }
 
                 if (response && response.messages) {
                     downloadCSV(response.messages);
                 } else {
-                    alert("No academic messages found to export.");
+                    showGlobalToast("No academic messages found to export.", "danger");
                 }
             });
         });
@@ -136,5 +136,26 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    }
+
+    function showGlobalToast(msg, type) {
+        let toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.className = 'toast-container';
+            document.body.appendChild(toastContainer);
+        }
+        
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `<span>${msg}</span>`;
+        
+        toastContainer.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add('fade-out');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 });

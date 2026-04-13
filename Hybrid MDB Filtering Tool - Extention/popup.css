@@ -1,3 +1,14 @@
+:root {
+    --bg-color: #f8f9fa;
+    --card-bg: #ffffff;
+    --text-color: #343a40;
+    --accent-black: #000000;
+    --muted-text: #6c757d;
+    --border-color: #dee2e6;
+    --danger: #dc3545;
+    --success: #28a745;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -221,4 +232,58 @@ button:hover {
 #export-csv-btn:hover {
     background-color: #f8f9fa;
     border-color: #dee2e6;
+}
+
+/* Toast Notification System */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background: #ffffff;
+    border-left: 4px solid var(--accent-black);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 15px 20px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 250px;
+    max-width: 350px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-color);
+    animation: slideInRight 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.toast.toast-success {
+    border-left-color: var(--success);
+}
+
+.toast.toast-danger {
+    border-left-color: var(--danger);
+}
+
+.toast.fade-out {
+    opacity: 0 !important;
+    transform: translateX(100%) !important;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }

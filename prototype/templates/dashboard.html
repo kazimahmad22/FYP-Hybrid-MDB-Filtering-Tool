@@ -16,13 +16,7 @@
             <a href="{{ url_for('logout') }}" class="btn-logout" style="text-decoration: none; display: inline-block;">Logout</a>
         </div>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="alert alert-{{ category }}" style="margin-bottom: 20px;">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
+
 
         {% if user.role == 'student' %}
         <div id="student-view" class="card">
@@ -60,7 +54,9 @@
                             <option value="student">Student</option>
                             <option value="instructor">Instructor</option>
                         </select>
-                        <button type="submit" class="btn-action" style="background: var(--accent-black); color: white;">Create User</button>
+                    </div>
+                    <div style="margin-top: 15px; display: flex; justify-content: flex-end;">
+                        <button type="submit" class="btn-action" style="background: var(--accent-black); color: white; width: auto; padding: 10px 30px; font-size: 12px;">Create New User</button>
                     </div>
                 </form>
             </div>
@@ -114,5 +110,26 @@
         </div>
         {% endif %}
     </div>
+    <div id="toast-container" class="toast-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="toast toast-{{ category }}">
+                  <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.toast').forEach(toast => {
+                setTimeout(() => {
+                    toast.classList.add('fade-out');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            });
+        });
+    </script>
 </body>
 </html>

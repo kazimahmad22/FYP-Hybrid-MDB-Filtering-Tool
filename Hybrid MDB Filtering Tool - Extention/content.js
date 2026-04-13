@@ -29,6 +29,7 @@ async function runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled) {
         totalMessages: 0,
         regexFlagged: 0,
         aiFlagged: 0,
+        bothFlagged: 0,
         academic: 0
     };
 
@@ -39,19 +40,17 @@ async function runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled) {
         if (messageElement && senderElement) {
             stats.totalMessages++;
             const messageText = messageElement.textContent;
-            let isNonAcademic = false;
-            let filterType = '';
+            
+            let flaggedByRegex = false;
+            let flaggedByAI = false;
 
             // 1. Rule-Based Check (if enabled)
             if (ruleBasedEnabled) {
-                isNonAcademic = regexPatterns.some((pattern) => pattern.test(messageText));
-                if (isNonAcademic) {
-                    filterType = 'regex';
-                }
+                flaggedByRegex = regexPatterns.some((pattern) => pattern.test(messageText));
             }
 
-            // 2. AI-Based Check (if enabled and not already flagged by regex)
-            if (aiFilteringEnabled && !isNonAcademic) {
+            // 2. AI-Based Check (if enabled, independently of regex)
+            if (aiFilteringEnabled) {
                 try {
                     const response = await fetch('http://localhost:3000/predict', {
                         method: 'POST',
@@ -64,8 +63,7 @@ async function runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled) {
                     if (response.ok) {
                         const data = await response.json();
                         if (data.label === 'non-academic') {
-                            isNonAcademic = true;
-                            filterType = 'ai';
+                            flaggedByAI = true;
                         }
                     }
                 } catch (error) {
@@ -74,15 +72,15 @@ async function runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled) {
             }
 
             // Apply styling or store message
-            if (isNonAcademic) {
-                // Highlight non-academic messages
-                if (filterType === 'regex') {
-                    messageElement.style.backgroundColor = 'yellow'; // Rule-based: Yellow
-                    stats.regexFlagged++;
-                } else if (filterType === 'ai') {
-                    messageElement.style.backgroundColor = 'orange'; // AI-based: Orange
-                    stats.aiFlagged++;
-                }
+            if (flaggedByRegex && flaggedByAI) {
+                messageElement.style.backgroundColor = '#87CEFA'; // Blue for both
+                stats.bothFlagged++;
+            } else if (flaggedByRegex) {
+                messageElement.style.backgroundColor = 'yellow'; // Rule-based only: Yellow
+                stats.regexFlagged++;
+            } else if (flaggedByAI) {
+                messageElement.style.backgroundColor = 'orange'; // AI-based only: Orange
+                stats.aiFlagged++;
             } else {
                 // Otherwise, it's academic, so store it for export
                 stats.academic++;

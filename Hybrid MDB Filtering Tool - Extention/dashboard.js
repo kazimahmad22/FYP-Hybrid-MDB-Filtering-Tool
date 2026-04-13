@@ -28,12 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('academic-msgs').textContent = stats.academic || 0;
         document.getElementById('regex-flagged').textContent = stats.regexFlagged || 0;
         document.getElementById('ai-flagged').textContent = stats.aiFlagged || 0;
+        document.getElementById('both-flagged').textContent = stats.bothFlagged || 0;
 
         // Update Charts
-        renderCharts(stats.academic, stats.regexFlagged, stats.aiFlagged);
+        renderCharts(stats.academic, stats.regexFlagged, stats.aiFlagged, stats.bothFlagged || 0);
     }
 
-    function renderCharts(academicCount, regexCount, aiCount) {
+    function renderCharts(academicCount, regexCount, aiCount, bothCount) {
         const ctxComparison = document.getElementById('comparisonChart').getContext('2d');
         const ctxDistribution = document.getElementById('distributionChart').getContext('2d');
 
@@ -45,17 +46,19 @@ document.addEventListener('DOMContentLoaded', () => {
         comparisonChartInstance = new Chart(ctxComparison, {
             type: 'bar',
             data: {
-                labels: ['Regex / Rule-Based', 'AI (Naïve Bayes)'],
+                labels: ['Regex / Rule-Based', 'AI (Naïve Bayes)', 'Caught by Both'],
                 datasets: [{
                     label: 'Number of Flagged Messages',
-                    data: [regexCount, aiCount],
+                    data: [regexCount, aiCount, bothCount],
                     backgroundColor: [
                         '#ffd43b', // Yellow for Regex
-                        '#fd7e14'  // Orange for AI
+                        '#fd7e14', // Orange for AI
+                        '#87CEFA'  // Blue for Both
                     ],
                     borderColor: [
                         '#f5c211',
-                        '#e8590c'
+                        '#e8590c',
+                        '#5b9bd5'
                     ],
                     borderWidth: 1,
                     borderRadius: 4
@@ -77,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // --- Doughnut Chart: Overall Distribution ---
-        const totalFlagged = regexCount + aiCount;
+        const totalFlagged = regexCount + aiCount + bothCount;
         distributionChartInstance = new Chart(ctxDistribution, {
             type: 'doughnut',
             data: {
@@ -249,15 +252,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    function showGlobalToast(msg, type) {
+        let toastContainer = document.getElementById('toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.id = 'toast-container';
+            toastContainer.className = 'toast-container';
+            document.body.appendChild(toastContainer);
+        }
+        
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `<span>${msg}</span>`;
+        
+        toastContainer.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add('fade-out');
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
     function showAuthAlert(msg, type, containerId) {
-        const container = document.getElementById(containerId);
-        const alert = document.createElement('div');
-        alert.className = `alert alert-${type}`;
-        alert.style.marginBottom = '20px';
-        alert.textContent = msg;
-        container.innerHTML = '';
-        container.appendChild(alert);
-        if (type === 'success') setTimeout(() => { container.innerHTML = ''; }, 3000);
+        showGlobalToast(msg, type);
     }
     
     // Call Init
@@ -310,12 +327,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const alertContainer = document.getElementById('alert-container');
 
     function showAlert(message, type) {
-        const alert = document.createElement('div');
-        alert.className = `alert alert-${type}`;
-        alert.textContent = message;
-        alertContainer.innerHTML = '';
-        alertContainer.appendChild(alert);
-        setTimeout(() => alert.remove(), 3000);
+        showGlobalToast(message, type);
     }
 
     function loadUsers() {

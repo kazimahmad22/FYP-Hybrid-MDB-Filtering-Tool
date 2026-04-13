@@ -10,14 +10,6 @@
     <div class="container">
         <h1>Welcome Back</h1>
         
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="alert alert-{{ category }}">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
-
         <form method="POST" action="{{ url_for('login') }}">
             <div class="form-group">
                 <label for="email">Email Address</label>
@@ -31,5 +23,27 @@
         </form>
         <p class="link-text">Don't have an account? <a href="{{ url_for('register') }}">Register here</a></p>
     </div>
+
+    <div id="toast-container" class="toast-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="toast toast-{{ category }}">
+                  <span>{{ message }}</span>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.toast').forEach(toast => {
+                setTimeout(() => {
+                    toast.classList.add('fade-out');
+                    setTimeout(() => toast.remove(), 300);
+                }, 3000);
+            });
+        });
+    </script>
 </body>
 </html>

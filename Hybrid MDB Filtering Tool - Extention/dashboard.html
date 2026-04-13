@@ -95,6 +95,10 @@
                     <h3 id="ai-flagged">0</h3>
                     <p>AI Flagged</p>
                 </div>
+                <div class="stat-card">
+                    <h3 id="both-flagged">0</h3>
+                    <p>Caught by Both</p>
+                </div>
             </div>
 
             <div class="charts-container">
@@ -155,7 +159,9 @@
                                 <option value="student">Student</option>
                                 <option value="instructor">Instructor</option>
                             </select>
-                            <button type="submit" class="btn-action" style="background: var(--accent-black); color: white; width: auto;">Create User</button>
+                        </div>
+                        <div style="margin-top: 15px; display: flex; justify-content: flex-end;">
+                            <button type="submit" class="btn-action" style="background: var(--accent-black); color: white; width: auto; padding: 10px 30px; font-size: 12px;">Create New User</button>
                         </div>
                     </form>
                 </div>
@@ -179,7 +185,7 @@
             </div>
         </div>
     </div>
-    
+    <div id="toast-container" class="toast-container"></div>
     <script src="dashboard.js"></script>
 </body>
 </html>

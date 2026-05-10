@@ -67,10 +67,11 @@ The project has evolved through several phases, transitioning from a standalone 
 - Access the dashboard by clicking "Dashboard" in the extension popup.
 - **Analytics**: Real-time comparison charts (Chart.js) showing the efficacy of Regex vs. AI filtering.
 - **User Management**: A simulated role-based system (Admin/Instructor/Student) to test access control and user status (Active/Blocked).
+  - **Admin Credentials**: Email: `admin@vu.edu.pk` | Password: `password123`
 
 ---
 
-## 📖 Developer Information
+## 📖 Developer Information 
 
 ### Extending the Dataset
 To improve AI accuracy, you can add new templates to `Dataset/data_collector.js` and regenerate the data:

@@ -29,7 +29,6 @@ async function runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled) {
         totalMessages: 0,
         regexFlagged: 0,
         aiFlagged: 0,
-        bothFlagged: 0,
         academic: 0
     };
 
@@ -72,14 +71,11 @@ async function runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled) {
             }
 
             // Apply styling or store message
-            if (flaggedByRegex && flaggedByAI) {
-                messageElement.style.backgroundColor = '#87CEFA'; // Blue for both
-                stats.bothFlagged++;
-            } else if (flaggedByRegex) {
-                messageElement.style.backgroundColor = 'yellow'; // Rule-based only: Yellow
+            if (flaggedByRegex) {
+                messageElement.style.backgroundColor = 'yellow'; // Rule-based: Yellow
                 stats.regexFlagged++;
             } else if (flaggedByAI) {
-                messageElement.style.backgroundColor = 'orange'; // AI-based only: Orange
+                messageElement.style.backgroundColor = 'orange'; // AI-based: Orange
                 stats.aiFlagged++;
             } else {
                 // Otherwise, it's academic, so store it for export

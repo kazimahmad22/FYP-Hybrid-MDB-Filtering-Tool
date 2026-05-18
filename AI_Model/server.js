@@ -39,7 +39,7 @@ app.post('/predict', (req, res) => {
     
     res.json({
         label: classification, // 'academic' or 'non-academic'
-        classifications: classifications // e.g., [{label: 'academic', value: 0.8}, {label: 'non-academic', value: 0.2}]
+        classifications: classifications 
     });
 });
 

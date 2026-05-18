@@ -63,10 +63,10 @@
     <div id="dashboard-container" class="dashboard-container" style="display: none;">
         <header>
             <div class="header-top">
-                <h1>Filtering Performance Dashboard</h1>
+                <h1 id="dashboard-main-title">Filtering Performance Dashboard</h1>
                 <button id="btn-logout" class="btn-logout">Logout</button>
             </div>
-            <p class="subtitle">Real-time analysis of Hybrid MDB Filtering</p>
+            <p id="dashboard-subtitle" class="subtitle">Real-time analysis of Hybrid MDB Filtering</p>
             
             <nav class="dashboard-nav">
                 <button id="nav-analytics" class="nav-btn active">Performance Analytics</button>
@@ -85,19 +85,11 @@
                 </div>
                 <div class="stat-card">
                     <h3 id="academic-msgs">0</h3>
-                    <p>Academic (Safe)</p>
+                    <p>Academic</p>
                 </div>
                 <div class="stat-card">
-                    <h3 id="regex-flagged">0</h3>
-                    <p>Regex Flagged</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="ai-flagged">0</h3>
-                    <p>AI Flagged</p>
-                </div>
-                <div class="stat-card">
-                    <h3 id="both-flagged">0</h3>
-                    <p>Caught by Both</p>
+                    <h3 id="non-academic-combined">0 - 0</h3>
+                    <p>Non-Academic (Regex - AI)</p>
                 </div>
             </div>
 
@@ -114,38 +106,114 @@
         </div>
 
         <!-- User Management & Prototype Sections (New) -->
-        <div id="management-section" style="display: none;">
+        <div id="management-section" style="display: none; flex: 1; overflow: hidden;">
             <!-- Student View Card -->
-            <div id="student-view" class="card" style="display: none;">
-                <h3>Academic Discussion Board</h3>
-                <p style="margin-top: 10px; color: var(--muted-text);">Welcome to the MDB. You can view academic discussions here. Non-academic noise is being filtered in real-time.</p>
-                <div style="margin-top: 20px; padding: 15px; border-left: 4px solid var(--accent-black); background: var(--bg-color);">
-                    <strong>Ali:</strong> Sir, when will the quiz results be announced?
+            <div id="student-view" class="card" style="display: none; flex: 1; flex-direction: column; height: 100%; margin-top: 0; border: none; border-radius: 0;">
+                <h2 style="margin-bottom: 20px; font-size: 20px; font-weight: 700; color: #000;">Hello, <span id="student-greeting-name">Student</span>!</h2>
+                
+                <!-- Query Submission Section -->
+                <div style="margin-top: 10px; padding-bottom: 25px; border-bottom: 1px solid #dee2e6;">
+                    <button id="btn-show-query-form" class="btn-action" style="background: var(--accent-black); color: white; width: auto; padding: 10px 24px; font-size: 13px; font-weight: 700; margin-bottom: 15px;">Submit New Query</button>
+                    
+                    <div id="query-form-container" style="display: none; margin-top: 10px;">
+                        <h4 style="margin-bottom: 15px; font-size: 16px; color: #000;">Enter Your Query</h4>
+                        <form id="query-form" style="margin-bottom: 20px;">
+                            <div class="form-group">
+                                <textarea id="query-text" rows="3" placeholder="Type your academic query here..." required style="resize: vertical; min-height: 80px;"></textarea>
+                            </div>
+                            <div style="display: flex; gap: 10px;">
+                                <button type="submit" class="btn-action" style="background: var(--accent-black); color: white; width: auto; padding: 10px 24px; font-size: 12px;">Send Query</button>
+                                <button type="button" id="btn-cancel-query" class="btn-action" style="background: #e9ecef; color: #343a40; width: auto; padding: 10px 24px; font-size: 12px; border: 1px solid #dee2e6;">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- Past Queries Section -->
+                <div style="margin-top: 25px; flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                    <h4 style="margin-bottom: 15px; font-size: 16px; color: #000;">Your Queries</h4>
+                    <div id="query-history-list" style="flex: 1; overflow-y: auto; padding-right: 5px;">
+                        <!-- Past queries will be injected here -->
+                    </div>
+                    <p id="no-queries-msg" style="color: var(--muted-text); font-style: italic; display: none;">No queries submitted yet.</p>
                 </div>
             </div>
 
             <!-- Instructor View Card -->
-            <div id="instructor-view" class="card" style="display: none;">
-                <h3>Instructor Panel: MDB Management</h3>
-                <p style="margin-top: 10px; color: var(--muted-text);">Filter and manage discussion board posts efficiently.</p>
-                <div style="margin-top: 20px;">
-                    <button class="btn-action" style="background: var(--accent-black); color: white;">Scan for Noise</button>
-                    <button class="btn-action" style="background: var(--muted-text); color: white;">Export Academic Queries</button>
+            <div id="instructor-view" class="card" style="display: none; flex: 1; flex-direction: column; height: 100%; margin-top: 0; border: none; border-radius: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <h3 style="font-size: 20px; font-weight: 700; color: #000;">Instructor Panel: Query Management</h3>
+                        <p style="margin-top: 5px; color: var(--muted-text);">Review and respond to classified student queries.</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span id="scan-indicator" style="display: none; align-items: center; gap: 8px; color: var(--accent-black); font-size: 13px; font-weight: 600;">
+                            <div class="spinner-small" style="width: 14px; height: 14px; border: 2px solid #dee2e6; border-top: 2px solid var(--accent-black); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                            Scanning...
+                        </span>
+                        <button id="btn-scan-all" class="btn-action" style="background: var(--accent-black); color: white; width: auto; display: flex; align-items: center; gap: 8px;">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                            Scan All Queries
+                        </button>
+                    </div>
+                </div>
+
+                <div class="instructor-view-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; flex: 1; overflow: hidden;">
+                    <!-- Academic Queries Column -->
+                    <div class="query-column" style="display: flex; flex-direction: column; overflow: hidden;">
+                        <div class="column-header" style="padding: 12px; background: #ebfbee; border-bottom: 2px solid #2b8a3e; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+                            <h4 style="color: #2b8a3e; margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Academic Queries</h4>
+                            <span id="academic-count" style="font-size: 12px; font-weight: 700; background: #2b8a3e; color: white; padding: 2px 8px; border-radius: 12px;">0</span>
+                        </div>
+                        <div id="academic-query-list" class="instructor-query-list" style="flex: 1; overflow-y: auto; padding: 15px; background: #fff; border: 1px solid #dee2e6; border-top: none; border-radius: 0 0 8px 8px;">
+                            <!-- Academic queries will be rendered here -->
+                        </div>
+                    </div>
+
+                    <!-- Non-Academic Queries Column -->
+                    <div class="query-column" style="display: flex; flex-direction: column; overflow: hidden;">
+                        <div class="column-header" style="padding: 12px; background: #fff5f5; border-bottom: 2px solid #c92a2a; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+                            <h4 style="color: #c92a2a; margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Non-Academic Queries</h4>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <label style="font-size: 11px; color: #c92a2a; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                                    <input type="checkbox" id="select-all-non-academic" style="cursor: pointer;"> All
+                                </label>
+                                <span id="non-academic-count" style="font-size: 12px; font-weight: 700; background: #c92a2a; color: white; padding: 2px 8px; border-radius: 12px;">0</span>
+                            </div>
+                        </div>
+                        <div id="bulk-action-bar" style="display: none; padding: 8px 12px; background: #fff5f5; border-bottom: 1px solid #ffa8a8; align-items: center; justify-content: space-between; flex-shrink: 0;">
+                            <span id="bulk-select-count" style="font-size: 11px; font-weight: 700; color: #c92a2a;">0 selected</span>
+                            <button id="btn-bulk-reply" class="btn-action" style="background: #c92a2a; color: white; margin: 0; padding: 4px 10px;">Bulk Reply</button>
+                        </div>
+                        <div id="non-academic-query-list" class="instructor-query-list" style="flex: 1; overflow-y: auto; padding: 15px; background: #fff; border: 1px solid #dee2e6; border-top: none; border-radius: 0 0 8px 8px;">
+                            <!-- Non-academic queries will be rendered here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reply Modal -->
+            <div id="reply-modal" class="reply-modal" style="display: none;">
+                <div class="reply-modal-content">
+                    <div class="reply-modal-header">
+                        <h4>Reply to Query</h4>
+                        <button class="reply-modal-close" id="reply-modal-close">&times;</button>
+                    </div>
+                    <div class="reply-modal-body">
+                        <p id="reply-query-text" style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 15px; color: var(--text-color); font-size: 14px;"></p>
+                        <textarea id="reply-text" rows="5" placeholder="Type your response here..." style="width: 100%; padding: 12px; border: 1px solid #dee2e6; border-radius: 6px; font-size: 14px; font-family: inherit; resize: vertical;"></textarea>
+                    </div>
+                    <div class="reply-modal-footer">
+                        <button class="btn-action" id="reply-cancel-btn" style="background: var(--muted-text); color: white;">Cancel</button>
+                        <button class="btn-action" id="reply-submit-btn" style="background: var(--accent-black); color: white;">Send Reply</button>
+                    </div>
                 </div>
             </div>
 
             <div id="admin-view" class="card">
                 <h3>User Management</h3>
-                <div class="user-info-container" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <div class="user-info-container" style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 20px;">
                     <p class="user-info">Logged in as: <strong id="current-user-name">Admin</strong> (<span class="role-badge" id="current-user-role">admin</span>)</p>
-                    <div class="view-switcher">
-                        <label for="view-as" style="font-size: 12px; margin-right: 5px;">Simulate View:</label>
-                        <select id="view-as" class="role-select" style="font-size: 12px; padding: 2px 5px;">
-                            <option value="admin">Admin</option>
-                            <option value="student">Student</option>
-                            <option value="instructor">Instructor</option>
-                        </select>
-                    </div>
                 </div>
                 
                 <div id="admin-create-user" style="margin-bottom: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 8px;">

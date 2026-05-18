@@ -11,6 +11,8 @@
 <div class="container">
     <h1>Moderated Discussion Board (Mock LMS)</h1>
 
+    <div id="queries-area" style="display: none; margin-bottom: 30px;"></div>
+
     <!-- Academic Post 1 -->
     <div class="post" id="post-1" data-text="Sir, I am not understanding question 3 of the assignment. Can you explain?">
         <div class="sender">Ali</div>
@@ -222,6 +224,143 @@
     </div>
 
 </div>
+
+<script>
+var queriesLoaded = false;
+
+function loadQueries() {
+    var area = document.getElementById('queries-area');
+    area.style.display = 'block';
+    area.innerHTML = '<div class="loading-msg">Loading queries...</div>';
+
+    // 1. Get current user if possible to identify "you"
+    var currentUserId = null;
+    window.currentUserRole = null; 
+    if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.get(['currentUser'], function(data) {
+            if (data.currentUser) {
+                currentUserId = data.currentUser.id;
+                currentUserRole = data.currentUser.role;
+            }
+            fetchAndRenderQueries(currentUserId);
+        });
+    } else {
+        fetchAndRenderQueries(null);
+    }
+}
+
+function fetchAndRenderQueries(currentUserId) {
+    var area = document.getElementById('queries-area');
+    fetch('/api/queries')
+        .then(function(res) { return res.json(); })
+        .then(function(queries) {
+            area.innerHTML = '';
+            if (queries.length === 0) {
+                area.innerHTML = '<div class="loading-msg">No queries submitted yet.</div>';
+                return;
+            }
+
+            var sectionHeader = document.createElement('div');
+            sectionHeader.className = 'queries-divider';
+            sectionHeader.innerHTML =
+                '<span class="queries-label">Student Queries</span>' +
+                '<button class="refresh-btn" onclick="loadQueries()">Refresh</button>';
+            area.appendChild(sectionHeader);
+
+            queries.forEach(function(q) {
+                var date = new Date(q.timestamp);
+                var formatted = date.toLocaleDateString('en-US', {
+                    weekday: 'short', month: 'short', day: 'numeric', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit'
+                });
+
+                var replies = q.replies || (q.reply ? [q.reply] : []);
+                var replyBox = '';
+                if (replies.length > 0) {
+                    var sortedReplies = [].concat(replies).reverse();
+                    var latest = sortedReplies[0];
+                    var past = sortedReplies.slice(1);
+                    
+                    function formatReply(r, label) {
+                        var text = typeof r === 'string' ? r : r.text;
+                        var timeStr = typeof r === 'string' ? '' : new Date(r.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        var timeHtml = timeStr ? '<div style="text-align: right; font-size: 0.8em; color: #6c757d; margin-top: 4px; font-style: italic;">' + timeStr + '</div>' : '';
+                        
+                        return '<div class="query-reply-block" style="margin-top: 5px;">' +
+                                    '<div style="font-size:0.85em; margin-bottom:4px;">' +
+                                        '<strong>' + label + ':</strong>' +
+                                    '</div>' + escHtml(text) +
+                                    timeHtml + 
+                                '</div>';
+                    }
+
+                    replyBox = formatReply(latest, 'INSTRUCTOR');
+                    
+                    if (past.length > 0) {
+                        var pastHtml = past.map(function(r) { return formatReply(r, 'PAST REPLY'); }).join('');
+                        var toggleId = 'past-replies-' + q.id;
+                        replyBox += '<button class="toggle-past-btn" onclick="togglePastReplies(' + q.id + ')" style="background:none; border:none; color: #1971c2; font-size: 11px; cursor:pointer; padding: 4px 0; text-decoration: underline;">Read past replies (' + past.length + ')</button>';
+                        replyBox += '<div id="' + toggleId + '" style="display:none;">' + pastHtml + '</div>';
+                    }
+                }
+                
+                // Identify "you" if IDs match (using unique ID to distinguish even if names are identical)
+                var nameDisplay = escHtml(q.studentName);
+                if (currentUserId && q.studentId === currentUserId) {
+                    nameDisplay += ' <span style="color: #1971c2; font-weight: bold; font-size: 0.85em;">(You)</span>';
+                }
+
+                // Delete button for instructors/admins only
+                var deleteBtn = '';
+                if (typeof currentUserRole !== 'undefined' && (currentUserRole === 'instructor' || currentUserRole === 'admin')) {
+                    deleteBtn = '<button class="delete-query-btn" onclick="deleteQueryLms(' + q.id + ')" style="float: right; padding: 4px 8px; font-size: 10px; background: #e03131; color: white; border: none; border-radius: 4px; cursor: pointer; margin-left: 10px;">Delete</button>';
+                }
+
+                var div = document.createElement('div');
+                div.className = 'post query-post';
+                div.innerHTML =
+                    deleteBtn + 
+                    '<div class="sender">' + nameDisplay + '</div>' +
+                    '<div class="message query-message">' + escHtml(q.text) + '</div>' +
+                    replyBox +
+                    '<div class="post-meta">' +
+                        '<span>' + formatted + '</span>' +
+                    '</div>';
+                area.appendChild(div);
+            });
+
+            queriesLoaded = true;
+        })
+        .catch(function() {
+            area.innerHTML = '<div class="loading-msg">Unable to load queries. Make sure the server is running.</div>';
+        });
+}
+
+function deleteQueryLms(id) {
+    if (!confirm('Permanently delete this query?')) return;
+    fetch('/api/queries/' + id, { method: 'DELETE' })
+        .then(function(res) {
+            if (res.ok) loadQueries();
+        });
+}
+
+function togglePastReplies(id) {
+    var el = document.getElementById('past-replies-' + id);
+    if (el.style.display === 'none') {
+        el.style.display = 'block';
+    } else {
+        el.style.display = 'none';
+    }
+}
+
+function escHtml(text) {
+    var d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+}
+
+loadQueries();
+</script>
 
 </body>
 </html>

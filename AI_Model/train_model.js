@@ -3,9 +3,23 @@ const path = require('path');
 const natural = require('natural');
 const csv = require('csv-parser');
 
-const classifier = new natural.BayesClassifier();
 const DATASET_PATH = path.join(__dirname, '..', 'Dataset', 'labeled_messages.csv');
 const MODEL_PATH = path.join(__dirname, 'model.json');
+
+// Configure Bigram Tokenizer for better context
+const NGrams = natural.NGrams;
+
+// Override the default unigram behavior to include bigrams
+const customStemmer = {
+    tokenizeAndStem: function(text) {
+        const unigrams = natural.PorterStemmer.tokenizeAndStem(text);
+        const bigrams = NGrams.bigrams(text);
+        // Combine unigrams and bigrams for a richer feature set
+        return unigrams.concat(bigrams.map(b => b.join(' ')));
+    }
+};
+
+const classifier = new natural.BayesClassifier(customStemmer);
 
 console.log('Loading dataset from:', DATASET_PATH);
 
@@ -28,7 +42,7 @@ fs.createReadStream(DATASET_PATH)
         classifier.train();
         
         console.log('Saving model to:', MODEL_PATH);
-        classifier.save(MODEL_PATH, function(err, classifier) {
+        classifier.save(MODEL_PATH, function(err, savedClassifier) {
             if (err) {
                 console.error('Error saving model:', err);
             } else {

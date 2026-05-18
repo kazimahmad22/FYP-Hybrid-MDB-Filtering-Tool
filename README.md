@@ -4,7 +4,7 @@ A modern, comprehensive solution to enhance the Moderated Discussion Board (MDB)
 
 ---
 
-## 📂 Repository Structure
+## 📂 Repository Structures
 
 The project has evolved through several phases, transitioning from a standalone prototype to a fully integrated Chrome Extension.
 

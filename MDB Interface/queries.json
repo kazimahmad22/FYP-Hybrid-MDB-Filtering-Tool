@@ -1,0 +1,25 @@
+[
+  {
+    "id": 1779109352522,
+    "studentId": 2,
+    "studentName": "safeer",
+    "text": "hello",
+    "timestamp": "2026-05-18T13:02:32.522Z",
+    "status": "submitted",
+    "category": "non-academic"
+  },
+  {
+    "id": 1779103313155,
+    "studentId": 3,
+    "studentName": "Kazim",
+    "text": "what is operating system",
+    "timestamp": "2026-05-18T11:21:53.155Z",
+    "status": "replied",
+    "replies": [
+      "asd",
+      "asd",
+      "sss"
+    ],
+    "reply": "sss"
+  }
+]

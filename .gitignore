@@ -1,37 +1,42 @@
-# System/Developer Tool Folders
-.agents/
-.claude/
-.codex/
-.gemini/
-.opencode/
+# Dependencies
+node_modules/
+package-lock.json
+
+# AI Model Artifacts
+AI_Model/model.json
+
+# Environment & Private Files
+.env
+*.pem
+
+# OS/IDEs
+.DS_Store
+Thumbs.db
 .vscode/
 .idea/
 
-# Dependencies & Build Artifacts
-node_modules/
-package-lock.json
-AI_Model/node_modules/
-AI_Model/package-lock.json
+# Agent Identity & Artifacts
+.agents/
+.gemini/
+.antigravity/
 
-# Python Artifacts (Legacy Prototype)
-__pycache__/
-*.pyc
-prototype/__pycache__/
-prototype/*.pyc
-prototype/venv/
-.env
-
-# OS-Specific Junk
-.DS_Store
-Thumbs.db
-
-# Documentation & Internal Logs
+# Internal Documentation & Agent Logs
+implementation_plan.md
+task.md
+walkthrough.md
+AI_System_Architecture.md
+New Approach for Ai reply.md
 *.log
+
+# Test Scripts
+test_rag.js
+test_similarity.js
+test_classification.js
+inspect_nlp.js
+
+# Legacy/Obsolete Proto
+prototype/
+Explaination/
 cleanup_report.md
 verification_report.md
 design_audit_report.md
-implementation_plan.md
-walkthrough.md
-task.md
-#
-Explaination/

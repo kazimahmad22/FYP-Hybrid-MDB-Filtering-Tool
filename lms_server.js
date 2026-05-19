@@ -46,6 +46,14 @@ const server = http.createServer((req, res) => {
             return;
         }
 
+        // POST /api/queries/reset - Reset all queries
+        if (req.method === 'POST' && req.url === '/api/queries/reset') {
+            writeQueries([]);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: true }));
+            return;
+        }
+
         // POST /api/queries - Add new query
         if (req.method === 'POST' && url === '/api/queries') {
             let body = '';

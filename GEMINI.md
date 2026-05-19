@@ -61,4 +61,4 @@ This project is a browser-based tool to enhance the Moderated Discussion Board (
 4.  **Usage**: 
     *   Toggle Rule-based or AI-based filtering in the extension popup.
     *   Use the **"Dashboard"** link for Role-specific features (Statistics, Response Management, User Administration).
-    *   Admin Credentials: `admin@vu.edu.pk` | `password123`
+    *   Admin Credentials: `admin@gmail.com` | `12345`

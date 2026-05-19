@@ -162,6 +162,7 @@
                     </div>
                 </div>
 
+
                 <div class="instructor-view-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
                     <!-- Academic Queries Column -->
                     <div class="query-column">
@@ -205,6 +206,16 @@
                     </div>
                     <div class="reply-modal-body">
                         <p id="reply-query-text" style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 15px; color: var(--text-color); font-size: 14px;"></p>
+                        
+                        <!-- AI Suggestion from Handout (New) -->
+                        <div id="ai-suggestion-area" style="display: none; background: #ebfbee; border: 1px solid #2b8a3e; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
+                            <div style="font-size: 12px; font-weight: 700; color: #2b8a3e; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                                AI SUGGESTED ANSWER (FROM HANDOUT)
+                            </div>
+                            <p id="ai-suggestion-text" style="font-size: 13px; color: #2b8a3e; margin: 0; cursor: pointer; border-bottom: 1px dashed #2b8a3e; display: inline-block;" title="Click to use this suggestion">Suggesting...</p>
+                        </div>
+
                         <textarea id="reply-text" rows="5" placeholder="Type your response here..." style="width: 100%; padding: 12px; border: 1px solid #dee2e6; border-radius: 6px; font-size: 14px; font-family: inherit; resize: vertical;"></textarea>
                     </div>
                     <div class="reply-modal-footer">
@@ -240,6 +251,13 @@
 
                 <p style="margin-top: 10px; color: var(--muted-text);">Manage system users, block/unblock accounts, and oversee activity.</p>
                 <div class="admin-table-scroll">
+                    <div style="background: #fff4f2; border: 1px solid #ffc9c9; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                        <h4 style="color: #e03131; margin-top: 0;">Danger Zone</h4>
+                        <p style="font-size: 13px; color: #444; margin-bottom: 12px;">This will permanently delete all academic and non-academic queries from the entire system (Server + Local Storage).</p>
+                        <button id="btn-system-reset" class="btn-action" style="background: #e03131; color: white; width: max-content; padding: 10px 20px;">
+                            Reset All System Data
+                        </button>
+                    </div>
                     <table id="user-table" style="margin-top: 0;">
                         <thead style="position: sticky; top: 0; z-index: 5;">
                             <tr>

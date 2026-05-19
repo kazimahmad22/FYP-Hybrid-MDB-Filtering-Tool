@@ -1,0 +1,934 @@
+[
+  {
+    "id": "q001",
+    "question": "What is CS610?",
+    "normalized_question": "cs610",
+    "answer": "CS610 is a core course on Computer Networks at the Virtual University, originally prepared by Hammad Khalid Khan. The course consists of 45 lectures providing a structured journey from basic data communication to advanced internetworking topics like IP routing, IPv6, and network security.",
+    "aliases": [
+      "Tell me about this course",
+      "What will I learn in this subject",
+      "Course overview"
+    ],
+    "topic": "general",
+    "keywords": [
+      "cs610"
+    ]
+  },
+  {
+    "id": "q002",
+    "question": "How do we distinguish between a \"Network\" and the \"Internet\" in a technical context?",
+    "normalized_question": "how do we distinguish between a \"network\" and the \"internet\" in a technical context",
+    "answer": "In our field, a Network is defined as a system connecting computers using a single transmission technology. In contrast, the Internet is a sophisticated \"network of networks.\" It is a collection of distinct networks joined by routers, which are specialized devices configured to pass traffic between any two computers attached to any constituent network within the set. This architecture allows communication across vast distances and disparate technologies.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "distinguish",
+      "between",
+      "\"network\"",
+      "\"internet\"",
+      "technical",
+      "context"
+    ]
+  },
+  {
+    "id": "q003",
+    "question": "What are the primary taxonomies used to classify computer networks?",
+    "normalized_question": "what are the primary taxonomies used to classify computer networks",
+    "answer": "We classify networks based on four fundamental factors:\n\n1. Size: The geographic reach (e.g., LAN vs. WAN).\n2. Connectivity: The topology used (Point-to-Point or Broadcast).\n3. Medium: The physical layer technology (Copper, Coaxial, Fiber, or Radio).\n4. Mobility: Whether the nodes are fixed or mobile.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "what",
+      "primary",
+      "taxonomies",
+      "used",
+      "classify",
+      "computer",
+      "networks"
+    ]
+  },
+  {
+    "id": "q004",
+    "question": "How do Local Area Networks (LAN) and Wide Area Networks (WAN) compare across performance and management parameters?",
+    "normalized_question": "how do local area networks (lan) and wide area networks (wan) compare across performance and management parameters",
+    "answer": "While size is the most obvious differentiator, the technical performance and management implications are profound:\n\n| Parameter | Local Area Network (LAN) | Wide Area Network (WAN) |\n| :--- | :--- | :--- |\n| Geographic Span | Small (Room, building, or campus) | Large (Cities, countries, or continents) |\n| Transmission Speed | High speed (low congestion) | Typically lower speeds than LANs |\n| Latency | Very low | Higher due to distance and routing |\n| Reliability | High reliability; low error rates | Lower reliability; higher error rates |\n| Cost & Billing | Lower cost; simple ownership | Expensive; complex billing/administration |\n| Management | Managed by a single entity/org | Requires complex, multi-party coordination |",
+    "aliases": [],
+    "topic": "network-types",
+    "keywords": [
+      "local",
+      "area",
+      "networks",
+      "(lan)",
+      "wide",
+      "area",
+      "networks",
+      "(wan)",
+      "compare",
+      "across",
+      "performance",
+      "management",
+      "parameters"
+    ]
+  },
+  {
+    "id": "q005",
+    "question": "How are connectivity topologies categorized within Point-to-Point and Broadcast models?",
+    "normalized_question": "how are connectivity topologies categorized within point-to-point and broadcast models",
+    "answer": "* Point-to-Point Topologies:\n  * Star: Every computer connects to a central hub; communication must pass through this central point.\n  * Tree: Computers are arranged in a hierarchical, branching structure, effectively extending the reach of a network.\n* Broadcast Topologies:\n  * Satellite/Radio: Nodes communicate via wireless waves, where a transmission is available to all nodes in range.\n  * Ring: Nodes are connected in a closed loop; data circulates from one station to the next.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "connectivity",
+      "topologies",
+      "categorized",
+      "within",
+      "point-to-point",
+      "broadcast",
+      "models"
+    ]
+  },
+  {
+    "id": "q006",
+    "question": "What unique administrative challenges are introduced by Mobile Networks?",
+    "normalized_question": "what unique administrative challenges are introduced by mobile networks",
+    "answer": "Mobile networks introduce complexities that fixed networks do not face, most notably location tracking to ensure data reaches a moving target. Additionally, they must maintain semi-persistent connections and handle complex billing and administration as users move between different geographic cells or service providers.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "what",
+      "unique",
+      "administrative",
+      "challenges",
+      "introduced",
+      "mobile",
+      "networks"
+    ]
+  },
+  {
+    "id": "q007",
+    "question": "Why was early networking research focused on sharing computational power rather than peripheral devices?",
+    "normalized_question": "why was early networking research focused on sharing computational power rather than peripheral devices",
+    "answer": "In the early days of computing, the hardware itself was the most significant expense. Government and research budgets were insufficient to provide every scientist with a high-end computer. Consequently, the primary motivation for resource sharing was to allow researchers to access large-scale computational power. This enabled a scientist to utilize the specific, expensive machine best suited for their task, regardless of its physical location.",
+    "aliases": [],
+    "topic": "ip-addressing",
+    "keywords": [
+      "early",
+      "networking",
+      "research",
+      "focused",
+      "sharing",
+      "computational",
+      "power",
+      "rather",
+      "than",
+      "peripheral",
+      "devices"
+    ]
+  },
+  {
+    "id": "q008",
+    "question": "How should we interpret the \"Log Scale\" representation of Internet growth?",
+    "normalized_question": "how should we interpret the \"log scale\" representation of internet growth",
+    "answer": "When observing the growth of the Internet, a standard linear scale fails to capture the magnitude of change. By using a Log Scale\u2014where the y-axis represents powers of 10\u2014exponential growth appears as a linear trend. Because the Internet has historically doubled every nine to twelve months, the log scale demonstrates a clear mathematical relationship: the growth is truly exponential, not merely rapid.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "should",
+      "interpret",
+      "\"log",
+      "scale\"",
+      "representation",
+      "internet",
+      "growth"
+    ]
+  },
+  {
+    "id": "q009",
+    "question": "What is the technical utility and the limitations of the PING diagnostic tool?",
+    "normalized_question": "the technical utility and the limitations of the ping diagnostic tool",
+    "answer": "PING is an automated tool used to verify if a remote host is reachable. It provides the target\u2019s IP address, the sequence of packets, the Round-trip time (RTT), and packet loss statistics. However, if PING fails to receive a response, it cannot identify the specific cause. The failure could be due to a problem on the local machine, the remote machine, network congestion, or the target network purposefully rejecting PING packets to defend against \"denial of service\" (DoS) attacks.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "technical",
+      "utility",
+      "limitations",
+      "ping",
+      "diagnostic",
+      "tool"
+    ]
+  },
+  {
+    "id": "q010",
+    "question": "Why is Trace Route considered superior to PING for network debugging?",
+    "normalized_question": "why is trace route considered superior to ping for network debugging",
+    "answer": "While PING only confirms if a destination is \"alive,\" Trace Route provides a detailed path of the journey. It identifies every intermediate router between the source and destination, allowing administrators to pinpoint exactly where a failure or bottleneck is occurring along the route.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "trace",
+      "route",
+      "considered",
+      "superior",
+      "ping",
+      "network",
+      "debugging"
+    ]
+  },
+  {
+    "id": "q011",
+    "question": "What is the \"Concept of Packet,\" and how does it enforce \"fairness\" in a shared network?",
+    "normalized_question": "the \"concept of packet,\" and how does it enforce \"fairness\" in a shared network",
+    "answer": "A packet is a small, discrete block of data. Network systems utilize packets rather than continuous bit-streams to ensure fairness. In a bit-stream system, one large file transfer could monopolize the entire channel, forcing all other users to wait until the transfer completes. By using packets, computers take \"turns\" sending small chunks. Time Division Multiplexing (TDM) is the actual mechanism that facilitates this: a multiplexer at the source switches packets onto the shared channel, and a demultiplexer at the destination routes them to the correct receiver.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "\"concept",
+      "packet,\"",
+      "does",
+      "enforce",
+      "\"fairness\"",
+      "shared",
+      "network"
+    ]
+  },
+  {
+    "id": "q012",
+    "question": "Can you provide a mathematical comparison of transmission times \"With\" vs. \"Without\" packets?",
+    "normalized_question": "provide a mathematical comparison of transmission times \"with\" vs. \"without\" packets",
+    "answer": "Consider transferring a 5MB file over a 56Kbps line:\n\n* Without Packets: Calculation: \\( \\frac{5 \\times 10^6 \\text{ bytes} \\times 8 \\text{ bits/byte}}{56 \\times 10^3 \\text{ bits/sec}} \\approx 714 \\text{ seconds} \\approx \\mathbf{11.9 \\text{ minutes}} \\). Any other computer on this line is blocked for the entire 11.9 minutes.\n* With Packets (1000-byte chunks): Calculation: \\( \\frac{1000 \\text{ bytes} \\times 8 \\text{ bits/byte}}{56 \\times 10^3 \\text{ bits/sec}} \\approx \\mathbf{0.143 \\text{ seconds}} \\). Here, the \"wait time\" between turns is only 0.143 seconds. While the total time to send the 5MB file remains the same, the network remains accessible to others.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "provide",
+      "mathematical",
+      "comparison",
+      "transmission",
+      "times",
+      "\"with\"",
+      "\"without\"",
+      "packets"
+    ]
+  },
+  {
+    "id": "q013",
+    "question": "How is a \"Frame\" defined and delineated in hardware?",
+    "normalized_question": "how is a \"frame\" defined and delineated in hardware",
+    "answer": "A frame is a packet of a specific format defined by a particular hardware technology. To mark the boundaries of a frame, we use standard markers: SOH (Start of Header) to mark the beginning and EOT (End of Tail) to mark the end.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "\"frame\"",
+      "defined",
+      "delineated",
+      "hardware"
+    ]
+  },
+  {
+    "id": "q014",
+    "question": "What do missing frame markers indicate about the state of a transmission?",
+    "normalized_question": "what do missing frame markers indicate about the state of a transmission",
+    "answer": "In practice, these markers serve as diagnostic indicators:\n\n* Missing EOT: Suggests the sending computer likely crashed during transmission.\n* Missing SOH: Suggests the receiving computer missed the beginning of the message.\n* Bad Frame: If the internal data is corrupted or the markers are malformed, the frame is discarded.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "what",
+      "missing",
+      "frame",
+      "markers",
+      "indicate",
+      "about",
+      "state",
+      "transmission"
+    ]
+  },
+  {
+    "id": "q015",
+    "question": "How does \"Byte Stuffing\" resolve the issue of reserved characters appearing in the data payload?",
+    "normalized_question": "how does \"byte stuffing\" resolve the issue of reserved characters appearing in the data payload",
+    "answer": "If the data being sent contains the actual bit patterns for SOH, EOT, or ESC, the hardware might misinterpret them as control signals. To prevent this, the sender \"stuffs\" the data by prefixing reserved characters with an escape (esc) character.\n\n| Original Character | Transmitted Sequence |\n| :--- | :--- |\n| soh | esc x |\n| eot | esc y |\n| esc | esc z |",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "does",
+      "\"byte",
+      "stuffing\"",
+      "resolve",
+      "issue",
+      "reserved",
+      "characters",
+      "appearing",
+      "data",
+      "payload"
+    ]
+  },
+  {
+    "id": "q016",
+    "question": "What necessitates error detection codes in data transmission?",
+    "normalized_question": "what necessitates error detection codes in data transmission",
+    "answer": "Transmission errors are inevitable due to electromagnetic interference or power surges that flip bits. Error detection codes are extra bits added by the sender that allow the receiver to identify if the data has been altered.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "what",
+      "necessitates",
+      "error",
+      "detection",
+      "codes",
+      "data",
+      "transmission"
+    ]
+  },
+  {
+    "id": "q017",
+    "question": "What is the difference between \"Even\" and \"Odd\" Parity, and what is its primary limitation?",
+    "normalized_question": "the difference between \"even\" and \"odd\" parity, and its primary limitation",
+    "answer": "In Even Parity, the sender ensures the total count of 1s in the data (plus the parity bit) is an even number. In Odd Parity, the total count must be odd. The critical limitation of parity is that it can only detect an odd number of bit errors. If an even number of bits are flipped (e.g., two 0s become 1s), the parity remains the same, and the error goes undetected.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "difference",
+      "between",
+      "\"even\"",
+      "\"odd\"",
+      "parity,",
+      "primary",
+      "limitation"
+    ]
+  },
+  {
+    "id": "q018",
+    "question": "How does the \"Checksum\" procedure detect errors?",
+    "normalized_question": "how does the \"checksum\" procedure detect errors",
+    "answer": "The checksum treats data as a sequence of integers (8, 16, or 32-bit). The sender calculates the arithmetic sum of these integers, adds any carry bits back into the final sum, and transmits this result. The receiver repeats the calculation; if the results don't match, the frame is rejected.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "does",
+      "\"checksum\"",
+      "procedure",
+      "detect",
+      "errors"
+    ]
+  },
+  {
+    "id": "q019",
+    "question": "What is the mathematical foundation of the Cyclic Redundancy Check (CRC)?",
+    "normalized_question": "the mathematical foundation of the cyclic redundancy check (crc)",
+    "answer": "CRC treats the message as coefficients of a polynomial, which is then divided by a pre-defined constant polynomial. The remainder of this division is the CRC value that is transmitted with the message.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "mathematical",
+      "foundation",
+      "cyclic",
+      "redundancy",
+      "check",
+      "(crc)"
+    ]
+  },
+  {
+    "id": "q020",
+    "question": "How is CRC implemented in hardware?",
+    "normalized_question": "how is crc implemented in hardware",
+    "answer": "CRC is highly efficient in hardware using:\n\n1. Shift Registers: These are Initialized to zero before a message begins. As bits are processed, they Shift to the left.\n2. Exclusive OR (XOR) Units: Used in a feedback loop to perform the polynomial division. The remainder left in the register after all bits have been shifted through is the final CRC.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "implemented",
+      "hardware"
+    ]
+  },
+  {
+    "id": "q021",
+    "question": "Why is CRC more robust than a Checksum?",
+    "normalized_question": "why is crc more robust than a checksum",
+    "answer": "CRC is significantly more effective at detecting:\n\n* Vertical Errors: Caused by hardware failure (e.g., the same bit position is damaged across all characters).\n* Burst Errors: Localized interference (like lightning) that flips a cluster of bits in one specific location.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "more",
+      "robust",
+      "than",
+      "checksum"
+    ]
+  },
+  {
+    "id": "q022",
+    "question": "What are the two types of \"Locality of Reference\"?",
+    "normalized_question": "what are the two types of \"locality of reference\"",
+    "answer": "* Spatial Locality: Computers are most likely to communicate with other computers that are physically nearby.\n* Temporal Locality: Computers are likely to communicate with the same computers repeatedly over time.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "what",
+      "types",
+      "\"locality",
+      "reference\""
+    ]
+  },
+  {
+    "id": "q023",
+    "question": "What are the consequences of a cable cut in the three primary LAN topologies?",
+    "normalized_question": "what are the consequences of a cable cut in the three primary lan topologies",
+    "answer": "| Topology | Consequence of a \"Cable Cut\" |\n| :--- | :--- |\n| Star | Only the specific computer on that segment is affected; the rest of the network remains functional. |\n| Ring | The entire network is disabled as the loop is broken. |\n| Bus | The entire network is disabled. |",
+    "aliases": [],
+    "topic": "network-types",
+    "keywords": [
+      "what",
+      "consequences",
+      "cable",
+      "three",
+      "primary",
+      "topologies"
+    ]
+  },
+  {
+    "id": "q024",
+    "question": "What are the historical and modern standards for Ethernet?",
+    "normalized_question": "what are the historical and modern standards for ethernet",
+    "answer": "Ethernet was developed at Xerox PARC in the 1970s and later standardized by Xerox, Intel, and Digital (the DIX standard). It is currently governed by the IEEE 802.3 standard, which specifies everything from cable lengths to voltages.",
+    "aliases": [],
+    "topic": "ethernet",
+    "keywords": [
+      "what",
+      "historical",
+      "modern",
+      "standards",
+      "ethernet"
+    ]
+  },
+  {
+    "id": "q025",
+    "question": "How does Manchester Encoding represent binary data?",
+    "normalized_question": "how does manchester encoding represent binary data",
+    "answer": "Manchester Encoding does not rely on absolute voltage levels; instead, it uses signal transitions to encode data. For instance, a transition from a positive voltage to 0 volts represents a specific bit value. This ensures the receiver can remain synchronized with the sender's clock.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "does",
+      "manchester",
+      "encoding",
+      "represent",
+      "binary",
+      "data"
+    ]
+  },
+  {
+    "id": "q026",
+    "question": "How does CSMA/CD manage shared access and collision recovery?",
+    "normalized_question": "how does csma/cd manage shared access and collision recovery",
+    "answer": "* Carrier Sense (CS): A computer \"listens\" to the cable; it only transmits if the medium is idle.\n* Collision Detection (CD): The hardware monitors outgoing signals. If the signal on the wire differs from what the computer sent, a Collision is detected.\n* Exponential Back Off: After a collision, the computer waits a random amount of time. If a second collision occurs, it doubles the random delay range. This progressively reduces the probability of repeated collisions on busy networks.",
+    "aliases": [
+      "how does collision detection work in ethernet",
+      "how do devices avoid packet collisions",
+      "what happens when two devices transmit at the same time"
+    ],
+    "topic": "media-access-control",
+    "keywords": [
+      "does",
+      "csma/cd",
+      "manage",
+      "shared",
+      "access",
+      "collision",
+      "recovery"
+    ]
+  },
+  {
+    "id": "q027",
+    "question": "What are the core specifications of the IEEE 802.11 standard?",
+    "normalized_question": "what are the core specifications of the ieee 802.11 standard",
+    "answer": "Standard 802.11 wireless operates at the 2.4GHz frequency with a data rate of 11Mbps (though older variations operated at 900MHz and 2Mbps).",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "what",
+      "core",
+      "specifications",
+      "ieee",
+      "802.11",
+      "standard"
+    ]
+  },
+  {
+    "id": "q028",
+    "question": "Why is connectivity \"limited\" in wireless environments?",
+    "normalized_question": "why is connectivity \"limited\" in wireless environments",
+    "answer": "Unlike wired segments, wireless connectivity is affected by low signal strength and propagation being blocked by walls or other physical barriers. Furthermore, wireless nodes cannot reliably use Collision Detection because a transmitter may not be able to \"hear\" all other participants on the network.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "connectivity",
+      "\"limited\"",
+      "wireless",
+      "environments"
+    ]
+  },
+  {
+    "id": "q029",
+    "question": "How does CSMA/CA avoid collisions?",
+    "normalized_question": "how does csma/ca avoid collisions",
+    "answer": "Wireless networks use Collision Avoidance via a reservation system. A transmitter sends a short request message; if the receiver is clear, it broadcasts a short response reserving a slot for that transmitter. All other potential transmitters hear this reservation and remain silent for the duration of the slot.",
+    "aliases": [],
+    "topic": "media-access-control",
+    "keywords": [
+      "does",
+      "csma/ca",
+      "avoid",
+      "collisions"
+    ]
+  },
+  {
+    "id": "q030",
+    "question": "How does a Token Ring system maintain order?",
+    "normalized_question": "how does a token ring system maintain order",
+    "answer": "It uses a Token (a short, reserved frame). A computer can only transmit if it possesses the token, ensuring Round-Robin access. If a token is lost, the hardware is responsible for regeneration.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "does",
+      "token",
+      "ring",
+      "system",
+      "maintain",
+      "order"
+    ]
+  },
+  {
+    "id": "q031",
+    "question": "What makes FDDI a \"self-healing\" technology?",
+    "normalized_question": "what makes fddi a \"self-healing\" technology",
+    "answer": "Fiber Distributed Data Interconnect (FDDI) uses Counter Rotating Rings (two rings where data flows in opposite directions). If a station fails or a fiber is cut, the adjacent stations automatically configure a loop back, rerouting data through the spare ring to maintain connectivity.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "what",
+      "makes",
+      "fddi",
+      "\"self-healing\"",
+      "technology"
+    ]
+  },
+  {
+    "id": "q032",
+    "question": "What defines ATM technology?",
+    "normalized_question": "what defines atm technology",
+    "answer": "Asynchronous Transfer Mode (ATM) uses a star topology connected to a central electronic packet switch. It provides point-to-point connections, typically over fiber optics (using two fibers per connection), and achieves speeds exceeding 100Mbps.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "what",
+      "defines",
+      "technology"
+    ]
+  },
+  {
+    "id": "q033",
+    "question": "How are hardware addresses assigned to network interfaces?",
+    "normalized_question": "how are hardware addresses assigned to network interfaces",
+    "answer": "There are three distinct methods:\n\n1. Static: Assigned permanently by the manufacturer.\n2. Configurable: Set manually or via software by a system administrator.\n3. Dynamic: The interface hardware itself automatically assigns an address upon power-up.",
+    "aliases": [],
+    "topic": "ip-addressing",
+    "keywords": [
+      "hardware",
+      "addresses",
+      "assigned",
+      "network",
+      "interfaces"
+    ]
+  },
+  {
+    "id": "q034",
+    "question": "What is the difference between Broadcasting and Multicasting?",
+    "normalized_question": "the difference between broadcasting and multicasting",
+    "answer": "Broadcasting sends a frame to every station on the LAN, which can waste CPU cycles as every machine must process the frame. Multicasting is a restricted form; the interface hardware is programmed to filter for specific multicast addresses, ignoring unwanted traffic before it ever reaches the CPU.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "difference",
+      "between",
+      "broadcasting",
+      "multicasting"
+    ]
+  },
+  {
+    "id": "q035",
+    "question": "What is the structure of a standard Ethernet Frame?",
+    "normalized_question": "the structure of a standard ethernet frame",
+    "answer": "| Field | Size (Bytes) | Purpose |\n| :--- | :--- | :--- |\n| Preamble | 8 | Receiver synchronization |\n| Destination Address | 6 | Identifies the intended receiver |\n| Source Address | 6 | Hardware address of the sender |\n| Frame Type | 2 | Identifies the type of data (payload) |\n| Data (Payload) | 46 - 1500 | The actual data being transmitted |\n| CRC | 4 | 32-bit error detection code |",
+    "aliases": [],
+    "topic": "ethernet",
+    "keywords": [
+      "structure",
+      "standard",
+      "ethernet",
+      "frame"
+    ]
+  },
+  {
+    "id": "q036",
+    "question": "What is the role of the OUI in the IEEE 802.2 SNAP/LLC format?",
+    "normalized_question": "the role of the oui in the ieee 802.2 snap/llc format",
+    "answer": "In technologies that lack a native \"type\" field, the SNAP/LLC format is used. It includes an OUI (Organizationally Unique Identifier), which identifies the standards organization that defined the specific protocol being used (e.g., identifying the data as an IP packet).",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "role",
+      "ieee",
+      "802.2",
+      "snap/llc",
+      "format"
+    ]
+  },
+  {
+    "id": "q037",
+    "question": "How do Network Analyzers use \"Promiscuous Mode\"?",
+    "normalized_question": "how do network analyzers use \"promiscuous mode\"",
+    "answer": "A Network Analyzer (or \"Sniffer\") is a diagnostic tool that places its interface into Promiscuous Mode. In this mode, the hardware captures every frame on the LAN, regardless of the destination address. This allows the tool to report on total capacity utilization, collision rates, and frame distribution for debugging and performance monitoring.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "network",
+      "analyzers",
+      "\"promiscuous",
+      "mode\""
+    ]
+  },
+  {
+    "id": "q038",
+    "question": "What is the role of the Network Interface Card (NIC)?",
+    "normalized_question": "the role of the network interface card (nic)",
+    "answer": "The NIC connects a computer to the network. It plugs into the motherboard Bus and manages the electrical and procedural details of sending and receiving frames, offloading these tasks from the main processor.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "role",
+      "network",
+      "interface",
+      "card",
+      "(nic)"
+    ]
+  },
+  {
+    "id": "q039",
+    "question": "What is the subject code for this course?",
+    "normalized_question": "the subject code for this course",
+    "answer": "The subject code for this Computer Networks course is CS610.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "subject",
+      "code",
+      "this",
+      "course"
+    ]
+  },
+  {
+    "id": "q040",
+    "question": "What is the full name of this subject?",
+    "normalized_question": "the full name of this subject",
+    "answer": "The full name of this subject is Computer Networks (CS610).",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "full",
+      "name",
+      "this",
+      "subject"
+    ]
+  },
+  {
+    "id": "q041",
+    "question": "What are the main topics covered in CS610?",
+    "normalized_question": "what are the main topics covered in cs610",
+    "answer": "Main topics include Network Topologies, Packet Switching, Error Detection (CRC/Checksum), LAN/WAN technologies, IP Addressing, Subnetting, and Routing Algorithms.",
+    "aliases": [
+      "Tell me about this course",
+      "What will I learn in this subject",
+      "Course overview"
+    ],
+    "topic": "general",
+    "keywords": [
+      "what",
+      "main",
+      "topics",
+      "covered",
+      "cs610"
+    ]
+  },
+  {
+    "id": "q042",
+    "question": "Is this course related to Data Communication?",
+    "normalized_question": "is this course related to data communication",
+    "answer": "Yes, the early lectures of this course (Lectures 3-5) provide an overview of Data Communication as a foundation for understanding broader networking concepts.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "this",
+      "course",
+      "related",
+      "data",
+      "communication"
+    ]
+  },
+  {
+    "id": "q043",
+    "question": "What are the different classes of IP addresses?",
+    "normalized_question": "what are the different classes of ip addresses",
+    "answer": "IP addresses are divided into five classes. Class A is for very large networks, Class B is for medium-sized networks, and Class C is for small networks with up to 254 hosts. Classes D and E are reserved for multicasting and experimental use.",
+    "aliases": [
+      "What is class A class B class C",
+      "Network address classes",
+      "IP address ranges"
+    ],
+    "topic": "ip-addressing",
+    "keywords": [
+      "what",
+      "different",
+      "classes",
+      "addresses"
+    ]
+  },
+  {
+    "id": "q044",
+    "question": "What is the main difference between TCP and UDP?",
+    "normalized_question": "the main difference between tcp and udp",
+    "answer": "TCP (Transmission Control Protocol) is connection-oriented and guarantees reliable, ordered delivery of data. UDP (User Datagram Protocol) is connectionless and faster but does not guarantee delivery, making it ideal for streaming and gaming.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "main",
+      "difference",
+      "between"
+    ]
+  },
+  {
+    "id": "q045",
+    "question": "What is an IP Subnet Mask used for?",
+    "normalized_question": "an ip subnet mask used for",
+    "answer": "A subnet mask is used to divide an IP address into two parts: one part identifies the network and the other identifies the specific host on that network. This allows for efficient routing and better network organization.",
+    "aliases": [],
+    "topic": "ip-addressing",
+    "keywords": [
+      "subnet",
+      "mask",
+      "used"
+    ]
+  },
+  {
+    "id": "q046",
+    "question": "What is the function of the Address Resolution Protocol (ARP)?",
+    "normalized_question": "the function of the address resolution protocol (arp)",
+    "answer": "ARP is used to map a known IP address to a physical hardware address (MAC address) on a local area network. This is essential for data to be delivered to the correct physical device.",
+    "aliases": [],
+    "topic": "ip-addressing",
+    "keywords": [
+      "function",
+      "address",
+      "resolution",
+      "protocol",
+      "(arp)"
+    ]
+  },
+  {
+    "id": "q047",
+    "question": "How does a Switch differ from a Hub?",
+    "normalized_question": "how does a switch differ from a hub",
+    "answer": "A Hub broadcasts data to every port, which can cause congestion. A Switch is smarter; it learns which device is on which port and sends data only to the intended recipient, improving efficiency and security.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "does",
+      "switch",
+      "differ",
+      "from"
+    ]
+  },
+  {
+    "id": "q048",
+    "question": "What is the purpose of Network Address Translation (NAT)?",
+    "normalized_question": "the purpose of network address translation (nat)",
+    "answer": "NAT allows multiple devices on a private local network to share a single public IP address to access the internet. This helps conserve the limited supply of IPv4 addresses.",
+    "aliases": [],
+    "topic": "ip-addressing",
+    "keywords": [
+      "purpose",
+      "network",
+      "address",
+      "translation",
+      "(nat)"
+    ]
+  },
+  {
+    "id": "q049",
+    "question": "What is a Router?",
+    "normalized_question": "a router",
+    "answer": "A router is a specialized device that connects different networks together. it reads destination IP addresses in data packets and uses routing tables to determine the best path for the data to travel.",
+    "aliases": [],
+    "topic": "routing",
+    "keywords": [
+      "router"
+    ]
+  },
+  {
+    "id": "q050",
+    "question": "Why is IPv6 replacing IPv4?",
+    "normalized_question": "why is ipv6 replacing ipv4",
+    "answer": "IPv4 uses 32-bit addresses, which limited the total number of addresses to about 4 billion. IPv6 uses 128-bit addresses, providing a virtually unlimited number of unique addresses for the growing number of internet-connected devices.",
+    "aliases": [],
+    "topic": "ip-addressing",
+    "keywords": [
+      "ipv6",
+      "replacing",
+      "ipv4"
+    ]
+  },
+  {
+    "id": "q051",
+    "question": "What is a Default Gateway?",
+    "normalized_question": "a default gateway",
+    "answer": "A default gateway is the IP address of the router that a host uses to send data to a destination outside its own local network.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "default",
+      "gateway"
+    ]
+  },
+  {
+    "id": "q052",
+    "question": "What is the difference between Half-Duplex and Full-Duplex?",
+    "normalized_question": "the difference between half-duplex and full-duplex",
+    "answer": "In Half-Duplex, data can be sent or received but not at the same time (like a walkie-talkie). In Full-Duplex, data can be sent and received simultaneously (like a telephone call).",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "difference",
+      "between",
+      "half-duplex",
+      "full-duplex"
+    ]
+  },
+  {
+    "id": "q053",
+    "question": "What is a MAC Address?",
+    "normalized_question": "a mac address",
+    "answer": "A MAC (Media Access Control) address is a unique 48-bit hardware identifier assigned to every network interface card (NIC) by the manufacturer.",
+    "aliases": [],
+    "topic": "ip-addressing",
+    "keywords": [
+      "address"
+    ]
+  },
+  {
+    "id": "q054",
+    "question": "What is the role of the ICMP protocol?",
+    "normalized_question": "the role of the icmp protocol",
+    "answer": "ICMP (Internet Control Message Protocol) is used by network devices to send error messages and operational information, such as indicating that a requested host or router is unreachable.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "role",
+      "icmp",
+      "protocol"
+    ]
+  },
+  {
+    "id": "q055",
+    "question": "What is DNS and why is it important?",
+    "normalized_question": "dns and why is it important",
+    "answer": "DNS (Domain Name System) acts like a phonebook for the internet. It translates human-friendly domain names like google.com into the IP addresses that computers use to identify each other.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "important"
+    ]
+  },
+  {
+    "id": "q056",
+    "question": "What is Bandwidth?",
+    "normalized_question": "bandwidth",
+    "answer": "Bandwidth is the maximum rate of data transfer across a network path, typically measured in bits per second (bps).",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "bandwidth"
+    ]
+  },
+  {
+    "id": "q057",
+    "question": "What is Latency in a network?",
+    "normalized_question": "latency in a network",
+    "answer": "Latency is the time delay between the moment data is sent from a source and when it is received at the destination.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "latency",
+      "network"
+    ]
+  },
+  {
+    "id": "q058",
+    "question": "What is a Bridge in networking?",
+    "normalized_question": "a bridge in networking",
+    "answer": "A bridge is a device that connects two separate LAN segments together, treating them as a single logical network while filtering local traffic to reduce congestion.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "bridge",
+      "networking"
+    ]
+  },
+  {
+    "id": "q059",
+    "question": "What is a Virtual Circuit?",
+    "normalized_question": "a virtual circuit",
+    "answer": "A virtual circuit is a logical connection created between two nodes in a network that appears to be a dedicated physical path, commonly used in technologies like ATM.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "virtual",
+      "circuit"
+    ]
+  },
+  {
+    "id": "q060",
+    "question": "What is the hidden terminal problem in wireless networks?",
+    "normalized_question": "the hidden terminal problem in wireless networks",
+    "answer": "This occurs when two nodes cannot hear each other but can both hear a central access point. If they transmit at the same time, their signals collide at the access point.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "hidden",
+      "terminal",
+      "problem",
+      "wireless",
+      "networks"
+    ]
+  },
+  {
+    "id": "q061",
+    "question": "What is a Packet Sniffer?",
+    "normalized_question": "a packet sniffer",
+    "answer": "A packet sniffer is a tool or software (working in Promiscuous Mode) that captures and analyzes data packets as they travel across a network, used for debugging and security monitoring.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "packet",
+      "sniffer"
+    ]
+  },
+  {
+    "id": "q062",
+    "question": "What is the function of a Repeater?",
+    "normalized_question": "the function of a repeater",
+    "answer": "A repeater is a physical layer device that receives a signal, cleans it, and re-transmits it at a higher power to extend the distance a network cable can cover.",
+    "aliases": [],
+    "topic": "general",
+    "keywords": [
+      "function",
+      "repeater"
+    ]
+  }
+]

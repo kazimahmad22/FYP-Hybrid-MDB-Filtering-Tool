@@ -5,11 +5,16 @@ const DATASET_FILE = path.join(__dirname, 'labeled_messages.csv');
 
 // --- ACADEMIC TEMPLATES (Intent: Course-related queries, including logistics) ---
 const ACADEMIC_TEMPLATES = [
-    // 1. Conceptual & Theoretical Clarifications
+    // 1. Conceptual & Theoretical Clarifications (including polite variations)
     "Can you please explain the concept of {topic} again? I'm struggling with the definition.",
     "What is the core difference between {topic_a} and {topic_b} in this context?",
     "Sir, I noticed a contradiction in the slide about {topic}. Does it follow {theory}?",
     "How does the {algorithm} work when the input size is very large?",
+    "Hello sir, can you explain to me what {topic} is?",
+    "Hi, I want to understand {topic}. Can you help?",
+    "Respected Sir, please explain {theory}.",
+    "What is the purpose of {topic} in network communication?",
+    "How does {topic} affect the performance of a {topic_b}?",
     
     // 2. Practical & Application Assistance
     "I am facing an error in my code: {error}. I tried fixing the {topic} logic but it still fails.",
@@ -64,7 +69,7 @@ const NON_ACADEMIC_TEMPLATES = [
     "Highly appreciated, thank you so much."
 ];
 
-const TOPICS = ["Inheritance", "Polymorphism", "Binary Search Trees", "TCP/IP Stack", "Normalization", "Deadlocks", "Heap Memory"];
+const TOPICS = ["Ethernet", "CSMA/CD", "CSMA/CA", "IP addresses", "ARP", "TCP/IP Stack", "Routing", "Switching", "Bridges", "HTTP", "FTP", "Firewalls", "OSI Model", "Routers", "Gateways"];
 const THEORIES = ["Big O notation", "NP-completeness", "Bernoulli's principle", "CAP theorem"];
 const ALGORITHMS = ["QuickSort", "Dijkstra", "A*", "Backpropagation", "Round Robin"];
 const ASSIGNMENT_TYPES = ["Assignment", "Quiz", "GDB", "Final Project", "Midterm"];

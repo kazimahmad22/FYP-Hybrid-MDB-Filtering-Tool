@@ -8,14 +8,16 @@ A modern, comprehensive solution to enhance the Moderated Discussion Board (MDB)
 
 The project has evolved through several phases, transitioning from a standalone prototype to a fully integrated Chrome Extension.
 
-### 1. **Current Production System (Extension Tool)**
-- **`Hybrid MDB Filtering Tool - Extention/`**: The core Chrome Extension (v3) containing the content script logic, popup interface, and the **Analytics & User Management Dashboard**.
-- **`AI_Model/`**: The AI backend. Contains the Naive Bayes training script (`train_model.js`), the trained weights (`model.json`), and the Express-based prediction API (`server.js`).
-- **`MDB Interface/`**: A high-fidelity mock LMS discussion board with pre-loaded students and posts for testing and demonstration.
-- **`Dataset/`**: Tools for synthetic dataset generation (`data_collector.js`) and the master `labeled_messages.csv`.
+### 2. **AI Backend & Semantic Engine**
+- **`AI_Model/`**: The core intelligence hub.
+    - `train_model.js`: Naive Bayes training script for noise classification.
+    - `document_processor.js`: The **Hybrid Semantic + Keyword RAG** engine. Uses `transformers.js` for vector embeddings and `wink-bm25` for technical keyword matching.
+    - `server.js`: Express API providing `/predict` (classification) and `/reply` (RAG) endpoints.
+- **`Dataset/`**: Contains the synthetic data generator and the `CS610_Handout.json` knowledge base used by the RAG system.
 
-### 2. **Legacy Components**
-- **`prototype/`**: The initial "Phase 1" prototype. A standalone Python/Flask application that explored the conceptual design of user registration and role-based access before migrating to the extension-based architecture.
+### 3. **Mock LMS & Extension**
+- **`Hybrid MDB Filtering Tool - Extention/`**: Chrome Extension (v3) with real-time filtering, automated AI replies, and a role-based dashboard.
+- **`lms_server.js`**: Backend for the Mock LMS discussion board to persist queries and replies.
 
 ---
 
@@ -25,33 +27,32 @@ The project has evolved through several phases, transitioning from a standalone 
 - **Node.js** (LTS)
 - **Chrome Browser**
 
-### Phase 1: AI Backend Setup
-1.  Navigate to the AI Model directory:
+### Phase 1: AI & Knowledge Base Setup
+1.  Navigate to the AI Model directory and install dependencies:
     ```bash
-    cd AI_Model
+    cd AI_Model && npm install
     ```
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  **Train the Model**: Run the training script to analyze the `labeled_messages.csv` and generate the `model.json` file:
+2.  **Train Noise Classifier**:
     ```bash
     node train_model.js
     ```
-4.  **Start the AI Server** (listening on Port 3000):
+3.  **Start AI Server** (Port 3000):
     ```bash
     node server.js
     ```
 
 ### Phase 2: Mock LMS Setup
-1.  Return to the project root.
-2.  Launch the Mock LMS Server (listening on Port 5501):
+1.  Navigate to the root and install base dependencies:
+    ```bash
+    npm install
+    ```
+2.  **Start LMS Server** (Port 5501):
     ```bash
     node lms_server.js
     ```
 
 ### Phase 3: Extension Deployment
-1.  Open Chrome and navigate to `chrome://extensions/`.
+1.  Open `chrome://extensions/` in Chrome.
 2.  Enable **Developer Mode**.
 3.  Click **Load Unpacked** and select the `Hybrid MDB Filtering Tool - Extention` folder.
 
@@ -59,33 +60,26 @@ The project has evolved through several phases, transitioning from a standalone 
 
 ## 🛠 Usage Guide
 
-### 1. Filtering Logic
-- **Regex Filter**: Managed via the extension popup. It flags common patterns (e.g., "Good", "Present", Phone numbers) and highlights them in **Yellow**.
-- **AI Filter**: Uses the local Bayes classifier to analyze message context. It highlights flagged noise in **Orange**.
+### 1. Hybrid Intelligence
+- **Noise Filtering**: The system uses a Naive Bayes model to detect social noise/spam. Technical questions starting with polite greetings (e.g., "Hello sir...") are accurately identified as academic.
+- **AI Auto-Reply (RAG)**: If a student asks a networking question (e.g., "What is Ethernet?"), the RAG engine retrieves context from the `CS610_Handout.json` and provides an automated, course-specific answer.
 
-### 2. Analytics Dashboard
-- Access the dashboard by clicking "Dashboard" in the extension popup.
-- **Analytics**: Real-time comparison charts (Chart.js) showing the efficacy of Regex vs. AI filtering.
-- **User Management**: A simulated role-based system (Admin/Instructor/Student) to test access control and user status (Active/Blocked).
-  - **Admin Credentials**: Email: `admin@vu.edu.pk` | Password: `password123`
+### 2. Instructor Dashboard
+- Access the dashboard via the extension popup. It allows you to:
+    - View **performance analytics** (Regex vs. AI).
+    - Manage **student queries** in real-time.
+    - **Re-scan all queries** to apply updated filtering rules.
+- **Admin Credentials**: Email/User: `admin@gmail.com` | Password: `12345`
 
 ---
 
-## 📖 Developer Information 
+## 📖 Developer Handover 
 
-### Extending the Dataset
-To improve AI accuracy, you can add new templates to `Dataset/data_collector.js` and regenerate the data:
-```bash
-node Dataset/data_collector.js 500  # Generates 500 additional messages
-```
-After generating new data, remember to **rerun `node AI_Model/train_model.js`** to update the model weights.
+### Updating the Knowledge Base
+To add more networking topics, edit `Dataset/CS610_Handout.json`. The RAG engine will automatically re-index the content upon AI server restart.
 
 ### Design System
-The UI follows the **60-30-10 Neutral palette**:
-- **Primary Bg**: `#f8f9fa` (Light Gray)
-- **Surface**: `#ffffff` (White)
-- **Accent**: `#000000` (Black)
-- **Success/Danger**: Standard semantic colors with accessibility-tested contrast ratios.
+The UI follows a professional **Neutral Minimalist** aesthetic (Light Gray, White, Dark Text, Black accents) to fit seamlessly into any academic environment.
 
 ---
 

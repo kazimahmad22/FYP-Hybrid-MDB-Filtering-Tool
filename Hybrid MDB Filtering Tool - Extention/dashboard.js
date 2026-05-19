@@ -219,13 +219,13 @@ document.addEventListener('DOMContentLoaded', () => {
             let users = data.users || [];
             
             // Self-repair: Ensure admin exists and has correct password
-            let admin = users.find(u => u.email === 'admin@vu.edu.pk');
+            let admin = users.find(u => u.email === 'admin@gmail.com');
             if (!admin) {
-                admin = { id: 1, name: 'Admin User', email: 'admin@vu.edu.pk', role: 'admin', password: 'password123', status: 'active' };
+                admin = { id: 1, name: 'Admin User', email: 'admin@gmail.com', role: 'admin', password: '12345', status: 'active' };
                 users.push(admin);
                 chrome.storage.local.set({ users });
-            } else if (admin.password !== 'password123') {
-                admin.password = 'password123'; // Fix corrupted/stale password
+            } else if (admin.password !== '12345') {
+                admin.password = '12345'; // Fix corrupted/stale password
                 chrome.storage.local.set({ users });
             }
             
@@ -541,25 +541,33 @@ document.addEventListener('DOMContentLoaded', () => {
                     const aiEnabled = syncData.aiFilteringEnabled === true;
                     
                     let classification = 'academic';
+                    let aiSuggestion = null;
                     
-                    // 1. Mandatory Noise Check (Phone numbers, greetings, social noise)
-                    const mandatoryNoiseRegex = [
-                        /03\d{9}/, /\d{4}-\d{7}/, // Phone numbers
-                        /https?:\/\/[^\s]+/, // URLs
+                    // 1. Mandatory Noise Check (Split into Hard and Soft)
+                    const hardNoiseRegex = [
+                        /03\d{7,11}/, /\d{3,4}-?\d{7}/, // Phone numbers (flexible length)
+                        /\b\d{10,12}\b/, // Pure long digit strings
+                        /https?:\/\/[^\s]+/ // URLs
+                    ];
+                    
+                    const softNoiseRegex = [
                         /\b(how are you|how is your health|hope you are well|how do you do)\b/i, // Social noise
                         /\b(hello|hi|hey|greetings)\b/i // Greetings
                     ];
                     
-                    const isMandatoryNoise = mandatoryNoiseRegex.some(p => p.test(queryText));
+                    const isHardNoise = hardNoiseRegex.some(p => p.test(queryText));
+                    const isSoftNoise = softNoiseRegex.some(p => p.test(queryText));
 
-                    // 2. Rule-based check
-                    const regexPatterns = keywords.map(k => new RegExp(k, 'i'));
-                    const flaggedByRegex = isMandatoryNoise || regexPatterns.some(p => p.test(queryText));
-                    
-                    if (flaggedByRegex) {
+                    // 2. Rule-based keywords (Exclude "sir" from immediate rejection if AI is on)
+                    const filteredKeywords = keywords.filter(k => k.toLowerCase() !== 'sir');
+                    const regexPatterns = filteredKeywords.map(k => new RegExp(k, 'i'));
+                    const flaggedByKeywords = regexPatterns.some(p => p.test(queryText));
+
+                    // 3. Final Decision Logic
+                    if (isHardNoise || flaggedByKeywords) {
                         classification = 'non-academic';
                     } else if (aiEnabled) {
-                        // 2. AI-based check
+                        // AI handles both clean academic and academic-with-greetings (Soft Noise)
                         try {
                             const aiRes = await fetch('http://localhost:3000/predict', {
                                 method: 'POST',
@@ -568,11 +576,15 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
                             if (aiRes.ok) {
                                 const aiData = await aiRes.json();
-                                classification = aiData.label; // 'academic' or 'non-academic'
+                                classification = aiData.label; 
+                                aiSuggestion = aiData.aiSuggestion;
                             }
                         } catch (e) {
-                            console.error("AI Server unreachable for classification", e);
+                            console.error("AI Server unreachable", e);
                         }
+                    } else if (isSoftNoise) {
+                        // If AI is off and it's just a greeting, flag as non-academic
+                        classification = 'non-academic';
                     }
 
                     const newQuery = {
@@ -581,14 +593,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         studentName: user.name,
                         text: queryText,
                         timestamp: new Date().toISOString(),
-                        status: 'submitted',
-                        category: classification // 'academic' or 'non-academic'
+                        status: aiSuggestion ? 'replied' : 'submitted',
+                        category: classification,
+                        replies: aiSuggestion ? [{
+                            text: `[AI Auto-Reply]: ${aiSuggestion}`,
+                            timestamp: new Date().toISOString()
+                        }] : []
                     };
 
                     queries.unshift(newQuery);
                     chrome.storage.local.set({ studentQueries: queries }, () => {
                         document.getElementById('query-text').value = '';
-                        showAlert(`Query submitted successfully! (Classified as: ${classification})`, 'success');
+                        showAlert(`Query submitted! (Auto-replied by AI)`, 'success');
                         
                         // Hide form and show button again
                         if (queryFormContainer) queryFormContainer.style.display = 'none';
@@ -783,6 +799,21 @@ document.addEventListener('DOMContentLoaded', () => {
             if (query) {
                 document.getElementById('reply-query-text').textContent = query.text;
                 document.getElementById('reply-text').value = '';
+                
+                // Show AI Suggestion if available
+                const suggestionArea = document.getElementById('ai-suggestion-area');
+                const suggestionText = document.getElementById('ai-suggestion-text');
+                
+                if (query.aiSuggestion) {
+                    suggestionArea.style.display = 'block';
+                    suggestionText.textContent = query.aiSuggestion;
+                    suggestionText.onclick = () => {
+                        document.getElementById('reply-text').value = query.aiSuggestion;
+                    };
+                } else {
+                    suggestionArea.style.display = 'none';
+                }
+
                 modal.style.display = 'flex';
                 modal.dataset.queryId = id;
                 modal.dataset.bulk = 'false';
@@ -833,18 +864,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 for (let query of queries) {
                     let classification = 'academic';
                     
-                    // Mandatory Noise Check
-                    const mandatoryNoiseRegex = [
-                        /03\d{9}/, /\d{4}-\d{7}/, // Phone numbers
-                        /https?:\/\/[^\s]+/, // URLs
+                    // 1. Mandatory Noise Check (Split into Hard and Soft)
+                    const hardNoiseRegex = [
+                        /03\d{7,11}/, /\d{3,4}-?\d{7}/, // Phone numbers (flexible length)
+                        /\b\d{10,12}\b/, // Pure long digit strings
+                        /https?:\/\/[^\s]+/ // URLs
+                    ];
+                    const softNoiseRegex = [
                         /\b(how are you|how is your health|hope you are well|how do you do)\b/i, // Social noise
                         /\b(hello|hi|hey|greetings)\b/i // Greetings
                     ];
-                    const isMandatoryNoise = mandatoryNoiseRegex.some(p => p.test(query.text));
-
-                    const flaggedByRegex = isMandatoryNoise || regexPatterns.some(p => p.test(query.text));
                     
-                    if (flaggedByRegex) {
+                    const isHardNoise = hardNoiseRegex.some(p => p.test(query.text));
+                    const isSoftNoise = softNoiseRegex.some(p => p.test(query.text));
+
+                    // 2. Rule-based Keywords (Exclude "sir" from immediate rejection)
+                    const filteredKeywords = keywords.filter(k => k.toLowerCase() !== 'sir');
+                    const regexPatternsForScan = filteredKeywords.map(k => new RegExp(k, 'i'));
+                    const flaggedByKeywords = regexPatternsForScan.some(p => p.test(query.text));
+
+                    // 3. Final Decision Logic for Scan
+                    if (isHardNoise || flaggedByKeywords) {
                         classification = 'non-academic';
                     } else if (aiEnabled) {
                         try {
@@ -855,11 +895,17 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
                             if (aiRes.ok) {
                                 const aiData = await aiRes.json();
-                                classification = aiData.label;
+                                classification = aiData.label; 
+                                // Update suggestion if it was missing and we now have one
+                                if (aiData.aiSuggestion && !query.aiSuggestion) {
+                                    query.aiSuggestion = aiData.aiSuggestion;
+                                }
                             }
                         } catch (e) {
                             console.error("AI Server unreachable for re-scan", e);
                         }
+                    } else if (isSoftNoise) {
+                        classification = 'non-academic';
                     }
                     query.category = classification;
                 }
@@ -965,10 +1011,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function openReplyModal(e) {
         const queryId = parseInt(e.target.dataset.id);
-        const queryText = e.target.closest('.instructor-query-item').querySelector('.instructor-query-text').textContent;
+        const queryItem = e.target.closest('.instructor-query-item');
+        const queryText = queryItem.querySelector('.instructor-query-text').textContent;
+        const suggestion = queryItem.dataset.suggestion;
 
         document.getElementById('reply-query-text').textContent = queryText;
         document.getElementById('reply-text').value = '';
+        
+        // Show AI Suggestion if available
+        const suggestionArea = document.getElementById('ai-suggestion-area');
+        const suggestionText = document.getElementById('ai-suggestion-text');
+        
+        if (suggestion && suggestion !== 'null' && suggestion !== 'undefined') {
+            suggestionArea.style.display = 'block';
+            suggestionText.textContent = suggestion;
+            // Option to auto-populate the reply with the suggestion
+            suggestionText.onclick = () => {
+                document.getElementById('reply-text').value = suggestion;
+            };
+        } else {
+            suggestionArea.style.display = 'none';
+        }
+
         document.getElementById('reply-modal').style.display = 'flex';
         document.getElementById('reply-modal').dataset.queryId = queryId;
     }
@@ -1138,4 +1202,36 @@ document.addEventListener('DOMContentLoaded', () => {
         return d.innerHTML;
     }
 
+    // --- System Reset Logic ---
+    const btnSystemReset = document.getElementById('btn-system-reset');
+    if (btnSystemReset) {
+        btnSystemReset.addEventListener('click', async () => {
+            if (!confirm('Are you sure you want to WIP EVERY QUERY from the entire system? This cannot be undone.')) return;
+
+            try {
+                // 1. Clear Local Storage
+                chrome.storage.local.remove(['filteringStats', 'studentQueries'], async () => {
+                    // 2. Clear Server (Send empty array)
+                    try {
+                        const res = await fetch('http://localhost:5501/api/queries/reset', {
+                            method: 'POST'
+                        });
+                        
+                        if (res.ok) {
+                            showGlobalToast('System Reset Complete!', 'success');
+                            // Reload Dashboard to reflect empty state
+                            location.reload();
+                        } else {
+                            showGlobalToast('Server reset failed.', 'danger');
+                        }
+                    } catch (e) {
+                        console.error("Server Reset Error:", e);
+                        showGlobalToast('Connection Error: Server is offline.', 'danger');
+                    }
+                });
+            } catch (error) {
+                console.error("Reset Error:", error);
+            }
+        });
+    }
 });

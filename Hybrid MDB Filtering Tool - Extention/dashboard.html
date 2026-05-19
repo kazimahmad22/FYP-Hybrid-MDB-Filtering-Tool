@@ -77,7 +77,7 @@
         <div id="alert-container"></div>
 
         <!-- Performance Analytics Section (Existing) -->
-        <div id="analytics-section">
+        <div id="analytics-section" style="display: none;">
             <div class="stats-overview">
                 <div class="stat-card">
                     <h3 id="total-msgs">0</h3>
@@ -106,9 +106,9 @@
         </div>
 
         <!-- User Management & Prototype Sections (New) -->
-        <div id="management-section" style="display: none; flex: 1; overflow: hidden;">
+        <div id="management-section" style="display: none;">
             <!-- Student View Card -->
-            <div id="student-view" class="card" style="display: none; flex: 1; flex-direction: column; height: 100%; margin-top: 0; border: none; border-radius: 0;">
+            <div id="student-view" class="card" style="display: none; margin-top: 0; border: none; border-radius: 0;">
                 <h2 style="margin-bottom: 20px; font-size: 20px; font-weight: 700; color: #000;">Hello, <span id="student-greeting-name">Student</span>!</h2>
                 
                 <!-- Query Submission Section -->
@@ -130,9 +130,9 @@
                 </div>
                 
                 <!-- Past Queries Section -->
-                <div style="margin-top: 25px; flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                <div style="margin-top: 25px;">
                     <h4 style="margin-bottom: 15px; font-size: 16px; color: #000;">Your Queries</h4>
-                    <div id="query-history-list" style="flex: 1; overflow-y: auto; padding-right: 5px;">
+                    <div id="query-history-list">
                         <!-- Past queries will be injected here -->
                     </div>
                     <p id="no-queries-msg" style="color: var(--muted-text); font-style: italic; display: none;">No queries submitted yet.</p>
@@ -140,7 +140,7 @@
             </div>
 
             <!-- Instructor View Card -->
-            <div id="instructor-view" class="card" style="display: none; flex: 1; flex-direction: column; height: 100%; margin-top: 0; border: none; border-radius: 0;">
+            <div id="instructor-view" class="card" style="display: none; margin-top: 0; border: none; border-radius: 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <div>
                         <h3 style="font-size: 20px; font-weight: 700; color: #000;">Instructor Panel: Query Management</h3>
@@ -155,23 +155,27 @@
                             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                             Scan All Queries
                         </button>
+                        <button id="btn-auto-reply-non-academic" class="btn-action" style="background: #c92a2a; color: white; width: auto; display: flex; align-items: center; gap: 8px;">
+                            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            Auto-Reply Non-Academic
+                        </button>
                     </div>
                 </div>
 
-                <div class="instructor-view-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; flex: 1; overflow: hidden;">
+                <div class="instructor-view-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
                     <!-- Academic Queries Column -->
-                    <div class="query-column" style="display: flex; flex-direction: column; overflow: hidden;">
+                    <div class="query-column">
                         <div class="column-header" style="padding: 12px; background: #ebfbee; border-bottom: 2px solid #2b8a3e; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
                             <h4 style="color: #2b8a3e; margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Academic Queries</h4>
                             <span id="academic-count" style="font-size: 12px; font-weight: 700; background: #2b8a3e; color: white; padding: 2px 8px; border-radius: 12px;">0</span>
                         </div>
-                        <div id="academic-query-list" class="instructor-query-list" style="flex: 1; overflow-y: auto; padding: 15px; background: #fff; border: 1px solid #dee2e6; border-top: none; border-radius: 0 0 8px 8px;">
+                        <div id="academic-query-list" class="instructor-query-list" style="padding: 15px; background: #fff; border: 1px solid #dee2e6; border-top: none; border-radius: 0 0 8px 8px;">
                             <!-- Academic queries will be rendered here -->
                         </div>
                     </div>
 
                     <!-- Non-Academic Queries Column -->
-                    <div class="query-column" style="display: flex; flex-direction: column; overflow: hidden;">
+                    <div class="query-column">
                         <div class="column-header" style="padding: 12px; background: #fff5f5; border-bottom: 2px solid #c92a2a; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
                             <h4 style="color: #c92a2a; margin: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Non-Academic Queries</h4>
                             <div style="display: flex; align-items: center; gap: 8px;">
@@ -185,7 +189,7 @@
                             <span id="bulk-select-count" style="font-size: 11px; font-weight: 700; color: #c92a2a;">0 selected</span>
                             <button id="btn-bulk-reply" class="btn-action" style="background: #c92a2a; color: white; margin: 0; padding: 4px 10px;">Bulk Reply</button>
                         </div>
-                        <div id="non-academic-query-list" class="instructor-query-list" style="flex: 1; overflow-y: auto; padding: 15px; background: #fff; border: 1px solid #dee2e6; border-top: none; border-radius: 0 0 8px 8px;">
+                        <div id="non-academic-query-list" class="instructor-query-list" style="padding: 15px; background: #fff; border: 1px solid #dee2e6; border-top: none; border-radius: 0 0 8px 8px;">
                             <!-- Non-academic queries will be rendered here -->
                         </div>
                     </div>
@@ -210,7 +214,7 @@
                 </div>
             </div>
 
-            <div id="admin-view" class="card">
+            <div id="admin-view" class="card" style="display: none; margin-top: 0; border: none; border-radius: 0;">
                 <h3>User Management</h3>
                 <div class="user-info-container" style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 20px;">
                     <p class="user-info">Logged in as: <strong id="current-user-name">Admin</strong> (<span class="role-badge" id="current-user-role">admin</span>)</p>
@@ -235,21 +239,23 @@
                 </div>
 
                 <p style="margin-top: 10px; color: var(--muted-text);">Manage system users, block/unblock accounts, and oversee activity.</p>
-                <table id="user-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="user-list">
-                        <!-- Users will be injected here via JS -->
-                    </tbody>
-                </table>
+                <div class="admin-table-scroll">
+                    <table id="user-table" style="margin-top: 0;">
+                        <thead style="position: sticky; top: 0; z-index: 5;">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-list">
+                            <!-- Users will be injected here via JS -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>

@@ -16,24 +16,29 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+html,
+body {
+    height: auto;
+    margin: 0;
+    overflow: auto;
+}
+
 body {
     background-color: #f8f9fa;
     color: #343a40;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
 .dashboard-container {
-    max-width: 1200px;
     width: 100%;
+    max-width: 1312px;
     margin: 0 auto;
+    min-height: 100vh;
     background: #ffffff;
-    flex: 1;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 }
 
 header {
@@ -156,7 +161,10 @@ canvas {
     box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
 }
 
-/* ... existing button styles ... */
+/* User Table Styles */
+.admin-table-scroll {
+    width: 100%;
+}
 
 .btn-logout {
     padding: 8px 16px;
@@ -367,20 +375,6 @@ th {
     color: #28a745;
 }
 
-#query-history-list::-webkit-scrollbar {
-    width: 6px;
-}
-
-#query-history-list::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-}
-
-#query-history-list::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 3px;
-}
-
 .alert {
     padding: 12px;
     border-radius: 6px;
@@ -568,7 +562,7 @@ th {
     display: flex;
     flex-direction: column;
     gap: 12px;
-    max-height: 500px;
+    flex: 1;
     overflow-y: auto;
     padding-right: 5px;
 }
@@ -704,18 +698,4 @@ th {
     justify-content: flex-end;
     gap: 10px;
     border-top: 1px solid #dee2e6;
-}
-
-#instructor-query-list::-webkit-scrollbar {
-    width: 5px;
-}
-
-#instructor-query-list::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-}
-
-#instructor-query-list::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 3px;
 }

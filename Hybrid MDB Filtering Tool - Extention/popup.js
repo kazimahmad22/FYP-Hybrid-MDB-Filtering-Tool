@@ -6,14 +6,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const exportBtn = document.getElementById('export-csv-btn');
 
     // Default keywords
-    const defaultKeywords = ["good", "present", "done", "sir"];
+    // Default keywords for Rule-Based Filtering
+    const defaultKeywords = [
+        "hello", "hi", "greetings", "good morning", "asalaam", "respected sir", "respected professor",
+        "thank you", "thanks", "jazakallah", "appreciated",
+        "03\\d{9}", "\\d{4}-\\d{7}", "https?:\\/\\/[^\\s]+" // Phone numbers and URLs
+    ];
 
     const aiFilterToggle = document.getElementById('ai-filter-toggle');
+    const highlightToggle = document.getElementById('highlight-toggle');
 
     // 1. Initialize UI from stored settings
-    chrome.storage.sync.get(['filteringEnabled', 'aiFilteringEnabled', 'keywords'], (data) => {
+    chrome.storage.sync.get(['filteringEnabled', 'aiFilteringEnabled', 'highlightingEnabled', 'keywords'], (data) => {
         filterToggle.checked = data.filteringEnabled !== false; // enabled by default
         aiFilterToggle.checked = data.aiFilteringEnabled === true; // disabled by default
+        highlightToggle.checked = data.highlightingEnabled !== false; // enabled by default
         const keywords = data.keywords || defaultKeywords;
         
         // If keywords were not in storage, save the defaults
@@ -33,6 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
     aiFilterToggle.addEventListener('change', () => {
         const isEnabled = aiFilterToggle.checked;
         chrome.storage.sync.set({ aiFilteringEnabled: isEnabled });
+    });
+
+    highlightToggle.addEventListener('change', () => {
+        const isEnabled = highlightToggle.checked;
+        chrome.storage.sync.set({ highlightingEnabled: isEnabled });
     });
 
     // 3. Add new keyword

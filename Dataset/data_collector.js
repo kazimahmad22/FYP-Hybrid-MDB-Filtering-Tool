@@ -1,122 +1,119 @@
 const fs = require('fs');
 const path = require('path');
-const readline = require('readline');
 
 const DATASET_FILE = path.join(__dirname, 'labeled_messages.csv');
 
-// Templates for Synthetic Data
+// --- ACADEMIC TEMPLATES (Intent: Course-related queries, including logistics) ---
 const ACADEMIC_TEMPLATES = [
-    "Sir, I am not understanding question {n} of the assignment.",
-    "Can you please explain the concept of {topic} again?",
+    // 1. Conceptual & Theoretical Clarifications
+    "Can you please explain the concept of {topic} again? I'm struggling with the definition.",
+    "What is the core difference between {topic_a} and {topic_b} in this context?",
+    "Sir, I noticed a contradiction in the slide about {topic}. Does it follow {theory}?",
+    "How does the {algorithm} work when the input size is very large?",
+    
+    // 2. Practical & Application Assistance
+    "I am facing an error in my code: {error}. I tried fixing the {topic} logic but it still fails.",
+    "How to implement {topic} using recursion appropriately?",
+    "In Assignment {n}, Question {m}, should we use the {algorithm} or {other_method} for optimization?",
+    "I'm trying to solve the problem on slide {n}, but my result is {result} instead of {expected}.",
+    
+    // 3. Syllabus & Logistics (NOW ACADEMIC)
     "When is the deadline for the {assignment_type}?",
-    "I am facing an error in my code: {error}",
-    "The lecture video for week {n} is not playing.",
-    "I have a request regarding the {topic} discussion.",
-    "Is it possible to submit the assignment via email?",
-    "Could you clarify the instructions for the project?",
-    "I think there is a mistake in the quiz question {n}.",
-    "What is the weightage of the final exam?",
-    "Sir, regarding the GDB, do we need to provide references?",
-    "My LMS is not showing the latest marks.",
-    "How to implement {topic} using recursion?",
-    "What are the prerequisites for the course {topic}?",
-    "Sir, I have submitted the {assignment_type} but it shows pending."
+    "Sir, please extend the deadline for assignment {n} due to internet issues.",
+    "Is there a class tomorrow or is it a holiday?",
+    "Can we submit the project in {format} format instead of {required_format}?",
+    "When will the results for quiz {n} be published?",
+    "What is the weightage of the final exam in the overall grading?",
+    "Do we need to know the mathematical derivation of {topic} for the exam?",
+    "The grading rubric for the project is not clear. How many marks for UI?",
+    
+    // 4. Lecture & Platform Access (Related to course content delivery)
+    "The lecture video for week {n} is not playing for me. Can you help?",
+    "Broken link on the module page for {topic}. I can't read the material.",
+    "Audio in the week {n} video is crackling. I can't hear the explanation.",
+    
+    // Hybrid Rule (Prioritize Academic)
+    "Can you explain why the output is null? Also, when is the quiz?"
 ];
 
+// --- NON-ACADEMIC TEMPLATES (Intent: Noise - Contact, Links, Greetings, Thanks) ---
 const NON_ACADEMIC_TEMPLATES = [
-    "Good", "Good job", "Done", "Present", "Present sir",
-    "Thanks", "Thank you", "Nicely explained",
-    "Got it", "Ok", "Okay", "Right", "Agreed",
-    "Please add me to whatsapp group {phone}",
-    "0300-{phone}", "Anyone from Lahore?",
-    "Follow me", "Sub to my channel",
-    "Hello", "Hi", "Bye", "Good morning",
-    "Best of luck everyone", "MashaAllah",
-    "Who is the best teacher?", "I like this course",
-    "Please check my msg", "Nice work!", "Excellent",
-    "Present sir roll number {n}", "I am here",
-    "Thanks for the lecture", "Superb sir",
-    "Could you please add me?", "Wait for me",
-    "Good luck to all", "Done sir",
-    // Deep Augmentation: Phishing
-    "IMPORTANT: Your LMS password will expire in 24 hours. Verify here: {url}",
-    "IT Support Alert: Abnormal login detected. Secure your account {url}",
-    "Action Required: Your student portal access is restricted. Click {url} to restore.",
-    "Library Services: You have an unpaid fine of $50. Pay now at {url}",
-    // Deep Augmentation: Fraudulent Jobs
-    "Work from home opportunity! Earn ${amount} per week. Apply now: {url}",
-    "HIRING: {job_title} needed at {company}. Flexible hours for students. DM me.",
-    "Easy money! Help us test apps and get paid ${amount}. No experience needed.",
-    "Join our marketing team and earn commission from your hostel room!",
-    // Deep Augmentation: Commercial/Academic Misconduct
-    "Need help with your {assignment_type}? We provide 100% original work. Contact us.",
-    "Best crypto signals! Turn $10 into $1000 in one week. Join telegram: {url}",
-    "Cheap textbooks and solved papers available here. Discount for {company} members.",
-    "Win a free iPhone! Just fill this survey and provide your {topic} feedback {url}"
+    // 1. Contact Information
+    "Please add me to the study group. My number is {phone}.",
+    "My contact number is {phone}, contact me for solved papers.",
+    "Students, join the discussion on WhatsApp: {phone}.",
+    "{phone} - call me for help.",
+
+    // 2. Links
+    "Check out this helpful link for the assignment: {url}",
+    "Solve your quiz easily here: {url}",
+    "Sub to my channel for VU updates: {url}",
+    "Download the solution from: {url}",
+    "Join our Telegram channel: {url}",
+
+    // 3. Greetings & Social
+    "Hello Sir", "Hi", "Good morning", "Asalaam-o-Alaikum", "Hello everyone",
+    "Respected Professor, Hope you are well.",
+    "Greetings to all students and staff.",
+    "How are you doing sir?", "How are you?", "Sir, how are you?", "How is your health?",
+    "Hope you are having a good day.",
+
+    // 4. Thank You Messages
+    "Thank you sir", "Thanks for the lecture", "Thanks!", "Jazakallah",
+    "Great explanation, thank you.", "Got it, thanks.",
+    "Highly appreciated, thank you so much."
 ];
 
-const TOPICS = ["Polymorphism", "Inheritance", "Pointers", "Arrays", "Recursion", "Database", "Networking"];
-const ASSIGNMENT_TYPES = ["Assignment", "GDB", "Quiz", "Project"];
-const ERRORS = ["IndexError", "NullReference", "Compilation Error", "Runtime Error"];
-const COMPANIES = ["Global Tech", "Student Services", "Bright Future", "EduCorp"];
-const JOB_TITLES = ["Data Entry", "Virtual Assistant", "Campus Ambassador", "Social Media Intern"];
-const URLS = ["http://bit.ly/lms-check", "http://vu-portal-secure.net", "http://job-opportunities.com", "http://secure-login.io"];
+const TOPICS = ["Inheritance", "Polymorphism", "Binary Search Trees", "TCP/IP Stack", "Normalization", "Deadlocks", "Heap Memory"];
+const THEORIES = ["Big O notation", "NP-completeness", "Bernoulli's principle", "CAP theorem"];
+const ALGORITHMS = ["QuickSort", "Dijkstra", "A*", "Backpropagation", "Round Robin"];
+const ASSIGNMENT_TYPES = ["Assignment", "Quiz", "GDB", "Final Project", "Midterm"];
+const ERRORS = ["NullPointerException", "Segmentation Fault", "IndexOutOfRange", "ModuleNotFound"];
+const FORMATS = [".zip", ".pdf", ".docx", ".cpp", ".py"];
+const URLS = ["http://bit.ly/study-help", "http://vu-solved.com", "http://youtube.com/vuchannel", "http://drive.google.com/xyz"];
 
 function replacePlaceholders(template) {
     return template
-        .replace('{n}', Math.floor(Math.random() * 10) + 1)
-        .replace('{topic}', TOPICS[Math.floor(Math.random() * TOPICS.length)])
-        .replace('{assignment_type}', ASSIGNMENT_TYPES[Math.floor(Math.random() * ASSIGNMENT_TYPES.length)])
-        .replace('{error}', ERRORS[Math.floor(Math.random() * ERRORS.length)])
-        .replace('{phone}', Math.floor(1000000 + Math.random() * 9000000))
-        .replace('{url}', URLS[Math.floor(Math.random() * URLS.length)])
-        .replace('{amount}', Math.floor(200 + Math.random() * 800))
-        .replace('{company}', COMPANIES[Math.floor(Math.random() * COMPANIES.length)])
-        .replace('{job_title}', JOB_TITLES[Math.floor(Math.random() * JOB_TITLES.length)]);
+        .replace(/{topic}/g, TOPICS[Math.floor(Math.random() * TOPICS.length)])
+        .replace(/{topic_a}/g, TOPICS[0])
+        .replace(/{topic_b}/g, TOPICS[1])
+        .replace(/{theory}/g, THEORIES[Math.floor(Math.random() * THEORIES.length)])
+        .replace(/{algorithm}/g, ALGORITHMS[Math.floor(Math.random() * ALGORITHMS.length)])
+        .replace(/{other_method}/g, ALGORITHMS[2])
+        .replace(/{assignment_type}/g, ASSIGNMENT_TYPES[Math.floor(Math.random() * ASSIGNMENT_TYPES.length)])
+        .replace(/{error}/g, ERRORS[Math.floor(Math.random() * ERRORS.length)])
+        .replace(/{n}/g, Math.floor(Math.random() * 5) + 1)
+        .replace(/{m}/g, Math.floor(Math.random() * 10) + 1)
+        .replace(/{result}/g, "404")
+        .replace(/{expected}/g, "200")
+        .replace(/{format}/g, FORMATS[Math.floor(Math.random() * FORMATS.length)])
+        .replace(/{required_format}/g, FORMATS[0])
+        .replace(/{phone}/g, "03" + Math.floor(100000000 + Math.random() * 900000000))
+        .replace(/{url}/g, URLS[Math.floor(Math.random() * URLS.length)]);
 }
 
-function generateSyntheticData(count) {
-    let data = [];
-    console.log(`Generating ${count} synthetic messages...`);
+function generateData(count) {
+    console.log(`Generating a balanced dataset of ${count} messages based on NEW simplified rules...`);
+    let csvContent = "message_content,label\n";
 
     for (let i = 0; i < count; i++) {
-        // 50/50 Split
-        if (Math.random() > 0.5) {
-            // Academic = 0
+        if (i % 2 === 0) {
+            // Academic (0)
             const template = ACADEMIC_TEMPLATES[Math.floor(Math.random() * ACADEMIC_TEMPLATES.length)];
-            data.push([replacePlaceholders(template), 0]);
+            const msg = replacePlaceholders(template);
+            csvContent += `"${msg.replace(/"/g, '""')}",0\n`;
         } else {
-            // Non-Academic = 1
+            // Non-Academic (1)
             const template = NON_ACADEMIC_TEMPLATES[Math.floor(Math.random() * NON_ACADEMIC_TEMPLATES.length)];
-            data.push([replacePlaceholders(template), 1]);
+            const msg = replacePlaceholders(template);
+            csvContent += `"${msg.replace(/"/g, '""')}",1\n`;
         }
     }
 
-    saveData(data);
-    console.log(`Successfully added ${count} messages to ${DATASET_FILE}`);
+    fs.writeFileSync(DATASET_FILE, csvContent, 'utf8');
+    console.log(`Successfully generated ${count} messages to ${DATASET_FILE}`);
 }
 
-function saveData(data) {
-    const fileExists = fs.existsSync(DATASET_FILE);
-    let csvContent = "";
-    
-    if (!fileExists) {
-        csvContent += "message_content,label\n";
-    }
-
-    data.forEach(row => {
-        // Escape quotes if needed
-        const msg = row[0].includes(',') ? `"${row[0]}"` : row[0];
-        csvContent += `${msg},${row[1]}\n`;
-    });
-
-    fs.appendFileSync(DATASET_FILE, csvContent, 'utf8');
-}
-
-// Check for args
 const args = process.argv.slice(2);
-if (args.length > 0) {
-    generateSyntheticData(parseInt(args[0]));
-} else {
-    console.log("Usage: node data_collector.js <count>");
-}
+const count = args[0] ? parseInt(args[0]) : 1000;
+generateData(count);

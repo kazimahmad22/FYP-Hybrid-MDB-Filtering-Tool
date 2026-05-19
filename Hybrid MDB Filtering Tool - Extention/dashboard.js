@@ -542,9 +542,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     let classification = 'academic';
                     
-                    // 1. Rule-based check
+                    // 1. Mandatory Noise Check (Phone numbers, greetings, social noise)
+                    const mandatoryNoiseRegex = [
+                        /03\d{9}/, /\d{4}-\d{7}/, // Phone numbers
+                        /https?:\/\/[^\s]+/, // URLs
+                        /\b(how are you|how is your health|hope you are well|how do you do)\b/i, // Social noise
+                        /\b(hello|hi|hey|greetings)\b/i // Greetings
+                    ];
+                    
+                    const isMandatoryNoise = mandatoryNoiseRegex.some(p => p.test(queryText));
+
+                    // 2. Rule-based check
                     const regexPatterns = keywords.map(k => new RegExp(k, 'i'));
-                    const flaggedByRegex = regexPatterns.some(p => p.test(queryText));
+                    const flaggedByRegex = isMandatoryNoise || regexPatterns.some(p => p.test(queryText));
                     
                     if (flaggedByRegex) {
                         classification = 'non-academic';
@@ -822,7 +832,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 for (let query of queries) {
                     let classification = 'academic';
-                    const flaggedByRegex = regexPatterns.some(p => p.test(query.text));
+                    
+                    // Mandatory Noise Check
+                    const mandatoryNoiseRegex = [
+                        /03\d{9}/, /\d{4}-\d{7}/, // Phone numbers
+                        /https?:\/\/[^\s]+/, // URLs
+                        /\b(how are you|how is your health|hope you are well|how do you do)\b/i, // Social noise
+                        /\b(hello|hi|hey|greetings)\b/i // Greetings
+                    ];
+                    const isMandatoryNoise = mandatoryNoiseRegex.some(p => p.test(query.text));
+
+                    const flaggedByRegex = isMandatoryNoise || regexPatterns.some(p => p.test(query.text));
                     
                     if (flaggedByRegex) {
                         classification = 'non-academic';
@@ -858,6 +878,89 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnScanAll = document.getElementById('btn-scan-all');
     if (btnScanAll) {
         btnScanAll.addEventListener('click', reScanAllQueries);
+    }
+
+    async function autoReplyAllNonAcademic() {
+        if (!confirm('Are you sure you want to send an auto-reply to ALL non-academic queries?')) return;
+
+        const btn = document.getElementById('btn-auto-reply-non-academic');
+        if (btn) {
+            btn.style.opacity = '0.5';
+            btn.disabled = true;
+        }
+
+        const autoReplyText = "Post only academic inquiries.";
+
+        chrome.storage.local.get(['studentQueries'], async (data) => {
+            let queries = data.studentQueries || [];
+            
+            // Filter non-academic queries that HAVEN'T received this specific auto-reply yet
+            const pendingNonAcademic = queries.filter(q => {
+                if (q.category !== 'non-academic') return false;
+                
+                // Check if any existing reply matches the auto-reply text
+                const replies = q.replies || (q.reply ? [{ text: q.reply }] : []);
+                const alreadyReplied = replies.some(r => {
+                    const rText = typeof r === 'string' ? r : r.text;
+                    return rText === autoReplyText;
+                });
+                
+                return !alreadyReplied;
+            });
+
+            if (pendingNonAcademic.length === 0) {
+                showGlobalToast('No new non-academic queries to reply to.', 'info');
+                if (btn) {
+                    btn.style.opacity = '1';
+                    btn.disabled = false;
+                }
+                return;
+            }
+
+            const timestamp = new Date().toISOString();
+            const replyObj = { text: autoReplyText, timestamp: timestamp };
+
+            // Update only the targeted queries locally
+            const targetIds = pendingNonAcademic.map(q => q.id);
+            queries = queries.map(q => {
+                if (targetIds.includes(q.id)) {
+                    const updated = { ...q, status: 'replied' };
+                    if (!updated.replies) updated.replies = [];
+                    updated.replies.push(replyObj);
+                    updated.reply = autoReplyText;
+                    return updated;
+                }
+                return q;
+            });
+
+            chrome.storage.local.set({ studentQueries: queries }, async () => {
+                // Sync with LMS server for the targeted queries
+                for (const q of pendingNonAcademic) {
+                    try {
+                        await fetch(`http://localhost:5501/api/queries/${q.id}/reply`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ reply: autoReplyText })
+                        });
+                    } catch (err) {
+                        console.error(`Failed to sync auto-reply for query ${q.id}`, err);
+                    }
+                }
+
+                showGlobalToast(`Auto-replied to ${pendingNonAcademic.length} new non-academic queries!`, 'success');
+                loadAllQueries();
+                
+                if (btn) {
+                    btn.style.opacity = '1';
+                    btn.disabled = false;
+                }
+            });
+        });
+    }
+
+    const btnAutoReply = document.getElementById('btn-auto-reply-non-academic');
+    if (btnAutoReply) {
+        btnAutoReply.addEventListener('click', autoReplyAllNonAcademic);
     }
 
     function openReplyModal(e) {

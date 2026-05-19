@@ -1,12 +1,85 @@
 [
   {
-    "id": 1779109352522,
+    "id": 1779176321946,
+    "studentId": 3,
+    "studentName": "Kazim",
+    "text": "https://www.linkedin.com/in/kazim-ahmad-633223220/",
+    "timestamp": "2026-05-19T07:38:41.946Z",
+    "status": "replied",
+    "category": "non-academic",
+    "replies": [
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-19T07:45:56.352Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779175407194,
+    "studentId": 3,
+    "studentName": "Kazim",
+    "text": "thank you so much",
+    "timestamp": "2026-05-19T07:23:27.194Z",
+    "status": "replied",
+    "category": "non-academic",
+    "replies": [
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-19T07:45:56.356Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779175402952,
+    "studentId": 3,
+    "studentName": "Kazim",
+    "text": "how are you doing",
+    "timestamp": "2026-05-19T07:23:22.952Z",
+    "status": "replied",
+    "category": "academic",
+    "replies": [
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-19T07:45:56.362Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779175398615,
+    "studentId": 3,
+    "studentName": "Kazim",
+    "text": "0333654654646",
+    "timestamp": "2026-05-19T07:23:18.615Z",
+    "status": "replied",
+    "category": "academic",
+    "replies": [
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-19T07:45:56.366Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779133259454,
     "studentId": 2,
     "studentName": "safeer",
-    "text": "hello",
-    "timestamp": "2026-05-18T13:02:32.522Z",
+    "text": "Can you tell me more about the course schedule?",
+    "timestamp": "2026-05-18T19:40:59.454Z",
     "status": "submitted",
-    "category": "non-academic"
+    "category": "academic"
+  },
+  {
+    "id": 1779119629957,
+    "studentId": 2,
+    "studentName": "safeer",
+    "text": "What is meant by operating system?",
+    "timestamp": "2026-05-18T15:53:49.957Z",
+    "status": "submitted",
+    "category": "academic"
   },
   {
     "id": 1779103313155,

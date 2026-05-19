@@ -10,7 +10,7 @@ function clearHighlighting() {
 }
 
 // Ensure the function is async to handle fetch calls
-async function runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled) {
+async function runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled, highlightingEnabled) {
     clearHighlighting(); // Clear previous highlights before applying new ones
 
     const posts = document.querySelectorAll('.post');
@@ -43,13 +43,26 @@ async function runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled) {
             let flaggedByRegex = false;
             let flaggedByAI = false;
 
-            // 1. Rule-Based Check (if enabled)
-            if (ruleBasedEnabled) {
+            // 1. Mandatory Rule-Based Check (Phone numbers, greetings, social noise)
+            const mandatoryNoiseRegex = [
+                /03\d{9}/, /\d{4}-\d{7}/, // Phone numbers
+                /https?:\/\/[^\s]+/, // URLs
+                /\b(how are you|how is your health|hope you are well|how do you do)\b/i, // Social noise
+                /\b(hello|hi|hey|greetings)\b/i // Greetings (standalone check)
+            ];
+            
+            const isMandatoryNoise = mandatoryNoiseRegex.some(p => p.test(messageText));
+            if (isMandatoryNoise) {
+                flaggedByRegex = true;
+            }
+
+            // 2. Rule-Based Check (from user keywords, if enabled)
+            if (!flaggedByRegex && ruleBasedEnabled) {
                 flaggedByRegex = regexPatterns.some((pattern) => pattern.test(messageText));
             }
 
-            // 2. AI-Based Check (if enabled, independently of regex)
-            if (aiFilteringEnabled) {
+            // 3. AI-Based Check (if enabled, independently of regex)
+            if (!flaggedByRegex && aiFilteringEnabled) {
                 try {
                     const response = await fetch('http://localhost:3000/predict', {
                         method: 'POST',
@@ -72,10 +85,14 @@ async function runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled) {
 
             // Apply styling or store message
             if (flaggedByRegex) {
-                messageElement.style.backgroundColor = 'yellow'; // Rule-based: Yellow
+                if (highlightingEnabled !== false) {
+                    messageElement.style.backgroundColor = 'yellow'; // Rule-based: Yellow
+                }
                 stats.regexFlagged++;
             } else if (flaggedByAI) {
-                messageElement.style.backgroundColor = 'orange'; // AI-based: Orange
+                if (highlightingEnabled !== false) {
+                    messageElement.style.backgroundColor = 'orange'; // AI-based: Orange
+                }
                 stats.aiFlagged++;
             } else {
                 // Otherwise, it's academic, so store it for export
@@ -103,12 +120,13 @@ async function runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled) {
 chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace === 'sync') {
         // Get the latest settings from storage and run the filter
-        chrome.storage.sync.get(['filteringEnabled', 'aiFilteringEnabled', 'keywords'], (data) => {
+        chrome.storage.sync.get(['filteringEnabled', 'aiFilteringEnabled', 'highlightingEnabled', 'keywords'], (data) => {
             const ruleBasedEnabled = data.filteringEnabled !== false;
             const aiFilteringEnabled = data.aiFilteringEnabled === true;
+            const highlightingEnabled = data.highlightingEnabled !== false;
             
             if (ruleBasedEnabled || aiFilteringEnabled) {
-                runFilter(data.keywords || [], ruleBasedEnabled, aiFilteringEnabled);
+                runFilter(data.keywords || [], ruleBasedEnabled, aiFilteringEnabled, highlightingEnabled);
             } else {
                 clearHighlighting();
                 console.clear();
@@ -119,15 +137,20 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 });
 
 // 2. Run the filter when the script is first injected
-chrome.storage.sync.get(['filteringEnabled', 'aiFilteringEnabled', 'keywords'], (data) => {
-    const defaultKeywords = ["good", "present", "done", "sir"];
+chrome.storage.sync.get(['filteringEnabled', 'aiFilteringEnabled', 'highlightingEnabled', 'keywords'], (data) => {
+    const defaultKeywords = [
+        "hello", "hi", "greetings", "good morning", "asalaam", "respected sir", "respected professor",
+        "thank you", "thanks", "jazakallah", "appreciated",
+        "03\\d{9}", "\\d{4}-\\d{7}", "https?:\\/\\/[^\\s]+" // Phone numbers and URLs
+    ];
     const keywords = data.keywords || defaultKeywords;
 
     const ruleBasedEnabled = data.filteringEnabled !== false;
     const aiFilteringEnabled = data.aiFilteringEnabled === true;
+    const highlightingEnabled = data.highlightingEnabled !== false;
 
     if (ruleBasedEnabled || aiFilteringEnabled) {
-        runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled);
+        runFilter(keywords, ruleBasedEnabled, aiFilteringEnabled, highlightingEnabled);
     } else {
         console.log("All filtering is currently disabled.");
     }

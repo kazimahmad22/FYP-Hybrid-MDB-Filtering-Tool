@@ -5,40 +5,31 @@ const DATASET_FILE = path.join(__dirname, 'labeled_messages.csv');
 
 // --- ACADEMIC TEMPLATES (Intent: Course-related queries, including logistics) ---
 const ACADEMIC_TEMPLATES = [
-    // 1. Conceptual & Theoretical Clarifications (including polite variations)
-    "Can you please explain the concept of {topic} again? I'm struggling with the definition.",
-    "What is the core difference between {topic_a} and {topic_b} in this context?",
-    "Sir, I noticed a contradiction in the slide about {topic}. Does it follow {theory}?",
-    "How does the {algorithm} work when the input size is very large?",
-    "Hello sir, can you explain to me what {topic} is?",
-    "Hi, I want to understand {topic}. Can you help?",
-    "Respected Sir, please explain {theory}.",
-    "What is the purpose of {topic} in network communication?",
-    "How does {topic} affect the performance of a {topic_b}?",
+    // 1. Purely Technical (No social fluff)
+    "Explain the concept of {topic}.",
+    "Define {topic} and its use case.",
+    "Difference between {topic_a} and {topic_b}.",
+    "How does {algorithm} handle {topic}?",
+    "{topic} definition in network security.",
+    "Output of {algorithm} for input {result}.",
     
-    // 2. Practical & Application Assistance
-    "I am facing an error in my code: {error}. I tried fixing the {topic} logic but it still fails.",
-    "How to implement {topic} using recursion appropriately?",
-    "In Assignment {n}, Question {m}, should we use the {algorithm} or {other_method} for optimization?",
-    "I'm trying to solve the problem on slide {n}, but my result is {result} instead of {expected}.",
+    // 2. Technical with minimal honorifics (Direct)
+    "I need help with {topic}.",
+    "Explain {topic} in detail.",
+    "Question regarding {theory}.",
+    "Implementation of {topic} using recursion?",
+    "Slides for week {n} regarding {topic}.",
     
-    // 3. Syllabus & Logistics (NOW ACADEMIC)
-    "When is the deadline for the {assignment_type}?",
-    "Sir, please extend the deadline for assignment {n} due to internet issues.",
-    "Is there a class tomorrow or is it a holiday?",
-    "Can we submit the project in {format} format instead of {required_format}?",
+    // 3. Syllabus & Logistics
+    "Deadline for {assignment_type}?",
     "When will the results for quiz {n} be published?",
-    "What is the weightage of the final exam in the overall grading?",
-    "Do we need to know the mathematical derivation of {topic} for the exam?",
-    "The grading rubric for the project is not clear. How many marks for UI?",
+    "What is the weightage of the final exam?",
+    "Grading rubric for the project is not clear.",
     
-    // 4. Lecture & Platform Access (Related to course content delivery)
-    "The lecture video for week {n} is not playing for me. Can you help?",
-    "Broken link on the module page for {topic}. I can't read the material.",
-    "Audio in the week {n} video is crackling. I can't hear the explanation.",
-    
-    // Hybrid Rule (Prioritize Academic)
-    "Can you explain why the output is null? Also, when is the quiz?"
+    // 4. Platform Issues
+    "Lecture video for week {n} is not playing.",
+    "Broken link on the module page for {topic}.",
+    "I can't read the material on {topic}."
 ];
 
 // --- NON-ACADEMIC TEMPLATES (Intent: Noise - Contact, Links, Greetings, Thanks) ---
@@ -56,17 +47,39 @@ const NON_ACADEMIC_TEMPLATES = [
     "Download the solution from: {url}",
     "Join our Telegram channel: {url}",
 
-    // 3. Greetings & Social
-    "Hello Sir", "Hi", "Good morning", "Asalaam-o-Alaikum", "Hello everyone",
-    "Respected Professor, Hope you are well.",
+    // 3. Greetings & Social (HIGH FREQUENCY)
+    "Hello {sir}", "Hi", "Good morning", "Asalaam-o-Alaikum", "Hello everyone", 
+    "hello", "hi", "hey", "AOA", "aoa", "AOA Sir", "WS", "ws", "Walaikum Assalam",
+    "Respected {sir}, Hope you are well.",
     "Greetings to all students and staff.",
-    "How are you doing sir?", "How are you?", "Sir, how are you?", "How is your health?",
+    "How are you doing {sir}?", "How are you?", "{sir}, how are you?", "How is your health?",
     "Hope you are having a good day.",
+    "Is it raining there?", "Weather is nice today.", "{sir} I am your big fan.",
 
-    // 4. Thank You Messages
-    "Thank you sir", "Thanks for the lecture", "Thanks!", "Jazakallah",
-    "Great explanation, thank you.", "Got it, thanks.",
-    "Highly appreciated, thank you so much."
+    // Phone / Spam patterns
+    "Join me {phone}", "Contact {phone}", "03{n}{n}{n}{n}{n}{n}{n}{n}",
+
+    // 4. Thank You & Acknowledgement
+    "Thank you {sir}", "Thanks for the lecture", "Thanks!", "Jazakallah",
+    "Great explanation, thank you.", "Got it, thanks.", "Thank you", "thanks", "thx",
+    "Highly appreciated, thank you so much.", "Understood {sir}.",
+    "Ok {sir}", "Yes {sir}", "No {sir}",
+
+    // 5. Short Noise & Presence (Targeted)
+    "Present", "Present sir", "present", "Present {sir}", "P", "p",
+    "done", "nice", "good", "ok", "okey", "yes", "no", "working", "checked", "i am here",
+    "me too", "same here", "agree", "correct", "true", "Lol", "lol", "LOL", "haha", "LMAO",
+
+    // 6. Abusive / Inappropriate Language
+    "You are a bad teacher.", "This course is trash.", "Useless lecture.",
+    "Go away.", "Shut up.", "Stupid explanation.", "I hate this.",
+    "idiot", "shame on you", "rubbish", "worst staff", "unprofessional",
+    "toxic", "waste of time", "nonsense", "stop talking", "you know nothing",
+    "asdasdasd", "qwertyuiop", "..........", "!!!!!!!!!!",
+
+    // 7. Character Repetition (Noise)
+    "thaaaank you", "helloooooo", "siiiiiiiiir", "pleaseeeee", "thanksaaaaa",
+    "AOAaaaa", "LOLzzzz", "Presentttttt", "okkkkkk", "yesssssss"
 ];
 
 const TOPICS = ["Ethernet", "CSMA/CD", "CSMA/CA", "IP addresses", "ARP", "TCP/IP Stack", "Routing", "Switching", "Bridges", "HTTP", "FTP", "Firewalls", "OSI Model", "Routers", "Gateways"];
@@ -93,6 +106,7 @@ function replacePlaceholders(template) {
         .replace(/{expected}/g, "200")
         .replace(/{format}/g, FORMATS[Math.floor(Math.random() * FORMATS.length)])
         .replace(/{required_format}/g, FORMATS[0])
+        .replace(/{sir}/g, ["Sir", "Madam", "Professor", "Dr.", "Instructor"][Math.floor(Math.random() * 5)])
         .replace(/{phone}/g, "03" + Math.floor(100000000 + Math.random() * 900000000))
         .replace(/{url}/g, URLS[Math.floor(Math.random() * URLS.length)]);
 }
@@ -100,6 +114,8 @@ function replacePlaceholders(template) {
 function generateData(count) {
     console.log(`Generating a balanced dataset of ${count} messages based on NEW simplified rules...`);
     let csvContent = "message_content,label\n";
+
+    const criticalNoise = ["hello", "hi", "hey", "AOA", "aoa", "lol", "Lol", "LOL", "Present sir", "Present", "present", "Thank you", "thanks", "done", "AOA Sir", "idiot", "stupid", "trash"];
 
     for (let i = 0; i < count; i++) {
         if (i % 2 === 0) {
@@ -109,8 +125,14 @@ function generateData(count) {
             csvContent += `"${msg.replace(/"/g, '""')}",0\n`;
         } else {
             // Non-Academic (1)
-            const template = NON_ACADEMIC_TEMPLATES[Math.floor(Math.random() * NON_ACADEMIC_TEMPLATES.length)];
-            const msg = replacePlaceholders(template);
+            let msg;
+            if (Math.random() < 0.4) {
+                // 40% chance to just inject a critical noise word directly to boost its non-academic weight
+                msg = criticalNoise[Math.floor(Math.random() * criticalNoise.length)];
+            } else {
+                const template = NON_ACADEMIC_TEMPLATES[Math.floor(Math.random() * NON_ACADEMIC_TEMPLATES.length)];
+                msg = replacePlaceholders(template);
+            }
             csvContent += `"${msg.replace(/"/g, '""')}",1\n`;
         }
     }
@@ -120,5 +142,5 @@ function generateData(count) {
 }
 
 const args = process.argv.slice(2);
-const count = args[0] ? parseInt(args[0]) : 1000;
+const count = args[0] ? parseInt(args[0]) : 2000;
 generateData(count);

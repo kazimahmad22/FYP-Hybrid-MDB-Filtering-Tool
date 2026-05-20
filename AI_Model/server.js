@@ -54,15 +54,33 @@ app.post('/predict', async (req, res) => {
         return res.status(400).json({ error: 'Please provide valid text.' });
     }
 
-    // 1. Classification (Academic vs Noise)
-    const classification = classifier.classify(text);
+    // 0. Preprocessing & Heuristics
+    const detectExcessiveRepetition = (str) => /(.)\1{2,}/.test(str);
     
-    // 2. Hybrid RAG Retrieval (Academic Only)
+    if (detectExcessiveRepetition(text)) {
+        console.log(`[FILTER] Flagged by repetition heuristic: "${text}"`);
+        return res.json({
+            label: 'non-academic',
+            aiSuggestion: null,
+            reason: 'heuristic-repetition'
+        });
+    }
+
+    // 1. Classification (Bayes)
+    let classification = classifier.classify(text);
+    
+    // 2. Hybrid RAG Retrieval & Strict Academic Matching
     let aiSuggestion = null;
-    if (classification === 'academic' && docProcessor.isReady) {
+    if (docProcessor.isReady) {
         try {
-            // Await the semantic/BM25 combined search result
             aiSuggestion = await docProcessor.findContext(text);
+            
+            // STRICT MATCHING: If Bayes thought it was academic, but RAG found NO content match,
+            // then it's either off-topic or misclassified noise. Treat as non-academic.
+            if (classification === 'academic' && !aiSuggestion) {
+                console.log(`[FILTER] Flip to non-academic (No course context match): "${text}"`);
+                classification = 'non-academic';
+            }
         } catch (err) {
             console.error("[RAG] Match error:", err);
         }

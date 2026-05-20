@@ -1,5 +1,271 @@
 [
   {
+    "id": 1779307881554,
+    "studentId": 3,
+    "studentName": "safeer",
+    "text": "wha tis cs610",
+    "timestamp": "2026-05-20T20:11:21.555Z",
+    "status": "replied",
+    "category": "academic",
+    "aiSuggestion": "CS610 is a core course on Computer Networks at the Virtual University, originally prepared by Hammad Khalid Khan. The course consists of 45 lectures providing a structured journey from basic data communication to advanced internetworking topics like IP routing, IPv6, and network security.",
+    "replies": [
+      {
+        "text": "CS610 is a core course on Computer Networks at the Virtual University, originally prepared by Hammad Khalid Khan. The course consists of 45 lectures providing a structured journey from basic data communication to advanced internetworking topics like IP routing, IPv6, and network security.",
+        "timestamp": "2026-05-20T20:11:28.623Z"
+      }
+    ],
+    "reply": "CS610 is a core course on Computer Networks at the Virtual University, originally prepared by Hammad Khalid Khan. The course consists of 45 lectures providing a structured journey from basic data communication to advanced internetworking topics like IP routing, IPv6, and network security."
+  },
+  {
+    "id": 1779307875966,
+    "studentId": 3,
+    "studentName": "safeer",
+    "text": "how are yoou ding",
+    "timestamp": "2026-05-20T20:11:15.966Z",
+    "status": "replied",
+    "category": "non-academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "[System Auto-Reply]: This post has been identified as non-academic noise. Please post only academic queries in this thread.",
+        "timestamp": "2026-05-20T20:11:15.966Z"
+      }
+    ]
+  },
+  {
+    "id": 1779307870626,
+    "studentId": 3,
+    "studentName": "safeer",
+    "text": "thaaaank you",
+    "timestamp": "2026-05-20T20:11:10.626Z",
+    "status": "replied",
+    "category": "non-academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "[System Auto-Reply]: This post has been identified as non-academic noise. Please post only academic queries in this thread.",
+        "timestamp": "2026-05-20T20:11:10.626Z"
+      }
+    ]
+  },
+  {
+    "id": 1779307865447,
+    "studentId": 3,
+    "studentName": "safeer",
+    "text": "what is teh capital of pakistan",
+    "timestamp": "2026-05-20T20:11:05.447Z",
+    "status": "replied",
+    "category": "non-academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "[System Auto-Reply]: This post has been identified as non-academic noise. Please post only academic queries in this thread.",
+        "timestamp": "2026-05-20T20:11:05.447Z"
+      }
+    ]
+  },
+  {
+    "id": 1779307014067,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "present",
+    "timestamp": "2026-05-20T19:56:54.067Z",
+    "status": "replied",
+    "category": "non-academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "[System Auto-Reply]: This post has been identified as non-academic noise. Please post only academic queries in this thread.",
+        "timestamp": "2026-05-20T19:56:54.067Z"
+      },
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-20T20:10:40.858Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779306972266,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "present",
+    "timestamp": "2026-05-20T19:56:12.266Z",
+    "status": "replied",
+    "category": "academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-20T20:10:40.862Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779306968329,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "ok sir",
+    "timestamp": "2026-05-20T19:56:08.329Z",
+    "status": "replied",
+    "category": "academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-20T20:10:40.866Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779306964423,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "good",
+    "timestamp": "2026-05-20T19:56:04.423Z",
+    "status": "replied",
+    "category": "non-academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "[System Auto-Reply]: This post has been identified as non-academic noise. Please post only academic queries in this thread.",
+        "timestamp": "2026-05-20T19:56:04.423Z"
+      },
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-20T20:10:40.869Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779306949777,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "03333675258",
+    "timestamp": "2026-05-20T19:55:49.777Z",
+    "status": "replied",
+    "category": "non-academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "[System Auto-Reply]: This post has been identified as non-academic noise. Please post only academic queries in this thread.",
+        "timestamp": "2026-05-20T19:55:49.777Z"
+      },
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-20T20:10:40.872Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779306943904,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "0364654",
+    "timestamp": "2026-05-20T19:55:43.904Z",
+    "status": "replied",
+    "category": "academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-20T20:10:40.875Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779306938529,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "lol",
+    "timestamp": "2026-05-20T19:55:38.529Z",
+    "status": "replied",
+    "category": "academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-20T20:10:40.879Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779306162670,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "thank you",
+    "timestamp": "2026-05-20T19:42:42.670Z",
+    "status": "replied",
+    "category": "non-academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "[System Auto-Reply]: This post has been identified as non-academic noise. Please post only academic queries in this thread.",
+        "timestamp": "2026-05-20T19:42:42.670Z"
+      },
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-20T20:10:40.884Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779306159540,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "thaank you",
+    "timestamp": "2026-05-20T19:42:39.540Z",
+    "status": "replied",
+    "category": "academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-20T20:10:40.888Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
+    "id": 1779306155216,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "what is cs610",
+    "timestamp": "2026-05-20T19:42:35.216Z",
+    "status": "submitted",
+    "category": "academic",
+    "aiSuggestion": "CS610 is a core course on Computer Networks at the Virtual University, originally prepared by Hammad Khalid Khan. The course consists of 45 lectures providing a structured journey from basic data communication to advanced internetworking topics like IP routing, IPv6, and network security.",
+    "replies": []
+  },
+  {
+    "id": 1779306149257,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "hello",
+    "timestamp": "2026-05-20T19:42:29.257Z",
+    "status": "replied",
+    "category": "non-academic",
+    "aiSuggestion": null,
+    "replies": [
+      {
+        "text": "[System Auto-Reply]: This post has been identified as non-academic noise. Please post only academic queries in this thread.",
+        "timestamp": "2026-05-20T19:42:29.258Z"
+      },
+      {
+        "text": "Post only academic inquiries.",
+        "timestamp": "2026-05-20T20:10:40.890Z"
+      }
+    ],
+    "reply": "Post only academic inquiries."
+  },
+  {
     "id": 1779265640620,
     "studentId": 2,
     "studentName": "kazim",
@@ -20,9 +286,15 @@
     "studentName": "kazim",
     "text": "What is Ethernet",
     "timestamp": "2026-05-20T08:26:11.241Z",
-    "status": "submitted",
+    "status": "replied",
     "category": "academic",
-    "replies": []
+    "replies": [
+      {
+        "text": "Your question could relate to these topics:\n1. **What is the structure of a standard Ethernet Frame?**\n2. **What are the historical and modern standards for Ethernet?**\n\nWhich one were you asking about?",
+        "timestamp": "2026-05-20T19:44:52.481Z"
+      }
+    ],
+    "reply": "Your question could relate to these topics:\n1. **What is the structure of a standard Ethernet Frame?**\n2. **What are the historical and modern standards for Ethernet?**\n\nWhich one were you asking about?"
   },
   {
     "id": 1779265561490,

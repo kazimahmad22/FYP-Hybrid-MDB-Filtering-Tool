@@ -593,10 +593,11 @@ document.addEventListener('DOMContentLoaded', () => {
                         studentName: user.name,
                         text: queryText,
                         timestamp: new Date().toISOString(),
-                        status: aiSuggestion ? 'replied' : 'submitted',
+                        status: classification === 'non-academic' ? 'replied' : 'submitted',
                         category: classification,
-                        replies: aiSuggestion ? [{
-                            text: `[AI Auto-Reply]: ${aiSuggestion}`,
+                        aiSuggestion: aiSuggestion, // Store suggestion for instructor
+                        replies: classification === 'non-academic' ? [{
+                            text: `[System Auto-Reply]: This post has been identified as non-academic noise. Please post only academic queries in this thread.`,
                             timestamp: new Date().toISOString()
                         }] : []
                     };
@@ -604,7 +605,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     queries.unshift(newQuery);
                     chrome.storage.local.set({ studentQueries: queries }, () => {
                         document.getElementById('query-text').value = '';
-                        showAlert(`Query submitted! (Auto-replied by AI)`, 'success');
+                        const msg = classification === 'non-academic' ? 'Query submitted and auto-replied by system.' : 'Query submitted successfully!';
+                        showAlert(msg, 'success');
                         
                         // Hide form and show button again
                         if (queryFormContainer) queryFormContainer.style.display = 'none';

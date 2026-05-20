@@ -4,6 +4,7 @@ package-lock.json
 
 # AI Model Artifacts
 AI_Model/model.json
+AI_Model/.cache/
 
 # Environment & Private Files
 .env

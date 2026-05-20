@@ -665,6 +665,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function createQueryItem(query) {
         const div = document.createElement('div');
         div.className = 'instructor-query-item';
+        div.dataset.suggestion = query.aiSuggestion || '';
         // Add specific styling for non-academic entries in the list
         if (query.category === 'non-academic') {
             div.style.borderLeftColor = '#e03131';

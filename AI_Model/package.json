@@ -4,6 +4,8 @@
   "description": "",
   "main": "train_model.js",
   "scripts": {
+    "start": "node server.js",
+    "download-model": "node download_model.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

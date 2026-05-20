@@ -1,1 +1,77 @@
-[]
+[
+  {
+    "id": 1779265640620,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "What is Ethernet",
+    "timestamp": "2026-05-20T08:27:20.620Z",
+    "status": "replied",
+    "category": "academic",
+    "replies": [
+      {
+        "text": "[AI Auto-Reply]: Your question could relate to these topics:\n1. **What is the structure of a standard Ethernet Frame?**\n2. **What are the historical and modern standards for Ethernet?**\n\nWhich one were you asking about?",
+        "timestamp": "2026-05-20T08:27:20.620Z"
+      }
+    ]
+  },
+  {
+    "id": 1779265571241,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "What is Ethernet",
+    "timestamp": "2026-05-20T08:26:11.241Z",
+    "status": "submitted",
+    "category": "academic",
+    "replies": []
+  },
+  {
+    "id": 1779265561490,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "what is cs610",
+    "timestamp": "2026-05-20T08:26:01.490Z",
+    "status": "submitted",
+    "category": "academic",
+    "replies": []
+  },
+  {
+    "id": 1779265306659,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "what is cs610",
+    "timestamp": "2026-05-20T08:21:46.659Z",
+    "status": "submitted",
+    "category": "academic",
+    "replies": []
+  },
+  {
+    "id": 1779265291050,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "what is cs610",
+    "timestamp": "2026-05-20T08:21:31.050Z",
+    "status": "submitted",
+    "category": "academic",
+    "replies": []
+  },
+  {
+    "id": 1779265275027,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "what is cs610",
+    "timestamp": "2026-05-20T08:21:15.027Z",
+    "status": "submitted",
+    "category": "academic",
+    "replies": []
+  },
+  {
+    "id": 1779265234634,
+    "studentId": 2,
+    "studentName": "kazim",
+    "text": "what is cs610",
+    "timestamp": "2026-05-20T08:20:34.634Z",
+    "status": "submitted",
+    "category": "academic",
+    "replies": []
+  }
+]

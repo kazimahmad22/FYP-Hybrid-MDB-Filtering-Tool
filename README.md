@@ -21,67 +21,94 @@ The project has evolved through several phases, transitioning from a standalone 
 
 ---
 
-## 🚀 Installation & Developer Setup
+## 🚀 Getting Started
 
-### Prerequisites
-- **Node.js** (LTS)
-- **Chrome Browser**
+Follow these steps to set up the complete environment.
 
-### Phase 1: AI & Knowledge Base Setup
-1.  Navigate to the AI Model directory and install dependencies:
+### 📋 Prerequisites
+- **Node.js** (LTS version recommended)
+- **Google Chrome** (for Extension testing)
+
+---
+
+### Phase 1: AI Engine & Knowledge Base
+The AI server handles noise classification and semantic retrieval (RAG).
+
+1.  **Install Dependencies**:
     ```bash
-    cd AI_Model && npm install
+    cd AI_Model
+    npm install
     ```
-2.  **Train Noise Classifier**:
+
+2.  **Download AI Model (Critical)**:
+    Since the semantic RAG utilizes a 100MB transformer model, we recommend pre-downloading it to bypass potential connection issues or rate limits:
+    ```bash
+    npm run download-model
+    ```
+    *Note: If this step fails with a **429 Error**, don't worry! The server will automatically fall back to Keyword-Matching mode.*
+
+3.  **Train the Noise Classifier**:
+    Generate the internal classification model for academic vs. non-academic detection:
     ```bash
     node train_model.js
     ```
-3.  **Start AI Server** (Port 3000):
-    ```bash
-    node server.js
-    ```
 
-### Phase 2: Mock LMS Setup
-1.  Navigate to the root and install base dependencies:
+4.  **Start AI Server**:
+    ```bash
+    npm start
+    ```
+    The AI engine will be available at `http://localhost:3000`.
+
+---
+
+### Phase 2: Mock LMS Environment
+This serves as the "Host Website" where students post queries.
+
+1.  **Initialize Root Dependencies**:
+    Navigate to the project root and run:
     ```bash
     npm install
     ```
-2.  **Start LMS Server** (Port 5501):
+
+2.  **Run LMS Server**:
     ```bash
     node lms_server.js
     ```
-
-### Phase 3: Extension Deployment
-1.  Open `chrome://extensions/` in Chrome.
-2.  Enable **Developer Mode**.
-3.  Click **Load Unpacked** and select the `Hybrid MDB Filtering Tool - Extention` folder.
+    The LMS will be accessible at `http://localhost:5501`.
 
 ---
 
-## 🛠 Usage Guide
-
-### 1. Hybrid Intelligence
-- **Noise Filtering**: The system uses a Naive Bayes model to detect social noise/spam. Technical questions starting with polite greetings (e.g., "Hello sir...") are accurately identified as academic.
-- **AI Auto-Reply (RAG)**: If a student asks a networking question (e.g., "What is Ethernet?"), the RAG engine retrieves context from the `CS610_Handout.json` and provides an automated, course-specific answer.
-
-### 2. Instructor Dashboard
-- Access the dashboard via the extension popup. It allows you to:
-    - View **performance analytics** (Regex vs. AI).
-    - Manage **student queries** in real-time.
-    - **Re-scan all queries** to apply updated filtering rules.
-- **Admin Credentials**: Email/User: `admin@gmail.com` | Password: `12345`
+### Phase 3: Chrome Extension Activation
+1.  Open Chrome and navigate to `chrome://extensions/`.
+2.  Enable **Developer Mode** (top-right toggle).
+3.  Click **Load Unpacked**.
+4.  Select the `Hybrid MDB Filtering Tool - Extention` folder.
 
 ---
 
-## 📖 Developer Handover 
+## 🛠 Features & Resilience
 
-### Updating the Knowledge Base
-To add more networking topics, edit `Dataset/CS610_Handout.json`. The RAG engine will automatically re-index the content upon AI server restart.
+### 🧠 Resilient RAG Engine
+Our **Hybrid Semantic + Keyword Engine** is built for reliability:
+- **Hybrid Mode**: Combines Vector Embeddings (Semantic) with BM25 (Keyword) for 0.90+ retrieval accuracy.
+- **Resilient Fallback**: If Hugging Face is inaccessible or the model fails to load, the system automatically switches to **Keyword-Only mode**, ensuring the tool remains functional in offline or high-traffic environments.
+- **Local Caching**: Once downloaded, models are stored in `AI_Model/.cache/` to ensure near-instant startup.
 
-### Design System
-The UI follows a professional **Neutral Minimalist** aesthetic (Light Gray, White, Dark Text, Black accents) to fit seamlessly into any academic environment.
+### 🛡 Filtering Intelligence
+- **Naive Bayes Classification**: High-speed detection of "good", "done", "present" noise.
+- **Polite-Greeting Handling**: Accurately classifies "Hello Sir, I have a question..." as academic instead of spam.
+- **Admin Dashboard**: Comprehensive stats tracking Regex vs. AI performance metrics.
+- **Admin Credentials**: `admin@gmail.com` | `12345`
 
 ---
 
-## 📝 License
-This project is part of a Final Year Project (FYP) for research and educational purposes.
+## 📖 Handover Basics
+
+- **Updating the Handout**: Edit `Dataset/CS610_Handout.json` to add new course material.
+- **Adding Noise Keywords**: Update the regex patterns in `Hybrid MDB Filtering Tool - Extention/content.js`.
+- **Revisiting Training Data**: If you need to re-train the AI, update the CSV in `Dataset/` and run `node train_model.js`.
+
+---
+
+## 📝 License & Purpose
+Developed as a **Final Year Project (FYP)** to solve real-world engagement issues in Distance Learning environments.

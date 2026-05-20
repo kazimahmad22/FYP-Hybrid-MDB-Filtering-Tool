@@ -18,14 +18,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Initialize UI from stored settings
     chrome.storage.sync.get(['filteringEnabled', 'aiFilteringEnabled', 'highlightingEnabled', 'keywords'], (data) => {
-        filterToggle.checked = data.filteringEnabled !== false; // enabled by default
-        aiFilterToggle.checked = data.aiFilteringEnabled === true; // disabled by default
-        highlightToggle.checked = data.highlightingEnabled !== false; // enabled by default
+        // Set defaults if first time
+        const ruleBasedEnabled = data.filteringEnabled !== false;
+        const aiFilteringEnabled = data.aiFilteringEnabled !== false; // Enabled by default now
+        const highlightingEnabled = data.highlightingEnabled !== false;
         const keywords = data.keywords || defaultKeywords;
+
+        filterToggle.checked = ruleBasedEnabled;
+        aiFilterToggle.checked = aiFilteringEnabled;
+        highlightToggle.checked = highlightingEnabled;
         
-        // If keywords were not in storage, save the defaults
-        if (!data.keywords) {
-            chrome.storage.sync.set({ keywords: defaultKeywords });
+        if (!data.keywords || data.aiFilteringEnabled === undefined) {
+            chrome.storage.sync.set({ 
+                keywords: keywords,
+                aiFilteringEnabled: aiFilteringEnabled,
+                filteringEnabled: ruleBasedEnabled,
+                highlightingEnabled: highlightingEnabled
+            });
         }
         
         renderKeywords(keywords);

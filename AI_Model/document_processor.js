@@ -2,11 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const { pipeline, env } = require('@xenova/transformers');
 
-// Configure Transformers environment to be more silent and handle RAG initialization better
+// Configure Transformers environment to use a local cache within the project
 env.allowLocalModels = true;
 env.allowRemoteModels = true;
 env.useProgressBar = false;
-env.logLevel = 'error'; // Silence the non-fatal "Unable to determine content-length" warning
+env.logLevel = 'error'; 
+env.cacheDir = path.join(__dirname, '.cache');
 
 const bm25 = require('wink-bm25-text-search');
 const nlp = require('wink-nlp-utils');
@@ -15,16 +16,18 @@ class DocumentProcessor {
     constructor() {
         this.qaPairs = [];
         this.isReady = false;
+        this.isSemanticReady = false; // Track if semantic model actually loaded
         this.extractor = null;
         this.engine = bm25();
         
         // Configuration from "New Approach" (Tightened per user request)
         this.weights = { semantic: 0.7, bm25: 0.3 };
+        this.fallbackWeights = { bm25: 1.0 }; // Use BM25 only if semantic fails
         this.thresholds = { high: 0.75, medium: 0.60, ambiguous: 0.45 };
+        this.bm25Threshold = 0.5; // Threshold for BM25-only fallback
         
         // ... abbreviations same ...
         this.abbreviations = {
-// ...
             "arp": "address resolution protocol",
             "tcp": "transmission control protocol",
             "udp": "user datagram protocol",
@@ -42,9 +45,16 @@ class DocumentProcessor {
 
     async loadHandout() {
         try {
-            console.log("[RAG] Initializing Semantic Model (all-MiniLM-L6-v2)...");
-            // Load embedding model
-            this.extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+            console.log("[RAG] Initializing Knowledge Base...");
+            
+            // 1. Try to load embedding model with retry logic for 429 errors
+            this.extractor = await this.initSemanticModel(3);
+            if (this.extractor) {
+                console.log("[RAG] Semantic Model Loaded.");
+                this.isSemanticReady = true;
+            } else {
+                console.warn("[RAG] Semantic model failed to load. Falling back to BM25-only mode.");
+            }
 
             const filePath = path.join(__dirname, '..', 'Dataset', 'CS610_Handout.json');
             if (!fs.existsSync(filePath)) {
@@ -55,7 +65,7 @@ class DocumentProcessor {
             const content = fs.readFileSync(filePath, 'utf8');
             this.qaPairs = JSON.parse(content);
 
-            // 1. Prepare BM25
+            // 2. Prepare BM25
             this.engine.defineConfig({ fldWeights: { question: 1, keywords: 0.8, aliases: 0.6 } });
             this.engine.definePrepTasks([
                 nlp.string.lowerCase,
@@ -65,8 +75,8 @@ class DocumentProcessor {
                 nlp.tokens.stem
             ]);
 
-            // 2. Pre-compute embeddings and Index BM25
-            console.log(`[RAG] Encoding ${this.qaPairs.length} knowledge entries...`);
+            // 3. Index Knowledge Base
+            console.log(`[RAG] Indexing ${this.qaPairs.length} knowledge entries...`);
             for (let i = 0; i < this.qaPairs.length; i++) {
                 const item = this.qaPairs[i];
                 
@@ -77,24 +87,48 @@ class DocumentProcessor {
                     aliases: (item.aliases || []).join(' ')
                 }, item.id);
 
-                // Semantic Indexing (Question)
-                const output = await this.extractor(item.question, { pooling: 'mean', normalize: true });
-                item.embedding = Array.from(output.data);
+                // Semantic Indexing (only if model loaded)
+                if (this.isSemanticReady) {
+                    try {
+                        const output = await this.extractor(item.question, { pooling: 'mean', normalize: true });
+                        item.embedding = Array.from(output.data);
 
-                // Semantic Indexing (Aliases)
-                item.aliasEmbeddings = [];
-                for (const alias of (item.aliases || [])) {
-                    const aliasOutput = await this.extractor(alias, { pooling: 'mean', normalize: true });
-                    item.aliasEmbeddings.push(Array.from(aliasOutput.data));
+                        item.aliasEmbeddings = [];
+                        for (const alias of (item.aliases || [])) {
+                            const aliasOutput = await this.extractor(alias, { pooling: 'mean', normalize: true });
+                            item.aliasEmbeddings.push(Array.from(aliasOutput.data));
+                        }
+                    } catch (e) {
+                        console.error(`[RAG] Failed to encode entry ${item.id}:`, e.message);
+                    }
                 }
             }
 
             this.engine.consolidate();
             this.isReady = true;
-            console.log(`[RAG] Ready! Hybrid Engine Online (${this.qaPairs.length} entries).`);
+            console.log(`[RAG] Ready! Hybrid Engine Online (${this.qaPairs.length} entries). Mode: ${this.isSemanticReady ? 'Hybrid' : 'BM25-Only'}`);
         } catch (error) {
-            console.error("[RAG] Initialization failed:", error);
+            console.error("[RAG] Critical Initialization failed:", error);
         }
+    }
+
+    async initSemanticModel(retries = 3) {
+        for (let i = 0; i < retries; i++) {
+            try {
+                console.log(`[RAG] Loading transformer model (Attempt ${i + 1}/${retries})...`);
+                return await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+            } catch (err) {
+                if (err.message.includes('429') && i < retries - 1) {
+                    const delay = Math.pow(2, i) * 2000;
+                    console.warn(`[RAG] Rate limited (429). Retrying in ${delay/1000}s...`);
+                    await new Promise(r => setTimeout(r, delay));
+                } else {
+                    console.error("[RAG] Transformer error:", err.message);
+                    if (i === retries - 1) return null;
+                }
+            }
+        }
+        return null;
     }
 
     preprocess(query) {
@@ -139,11 +173,18 @@ class DocumentProcessor {
         const normalizedQuery = this.preprocess(query);
         if (!normalizedQuery && !query) return null;
 
-        // SIGNAL A: Semantic Similarity (USE RAW QUERY for better context)
-        const queryOutput = await this.extractor(query, { pooling: 'mean', normalize: true });
-        const queryEmbedding = Array.from(queryOutput.data);
+        // SIGNAL A: Semantic Similarity (only if model ready)
+        let queryEmbedding = null;
+        if (this.isSemanticReady) {
+            try {
+                const queryOutput = await this.extractor(query, { pooling: 'mean', normalize: true });
+                queryEmbedding = Array.from(queryOutput.data);
+            } catch (err) {
+                console.error("[RAG] Query encoding error:", err.message);
+            }
+        }
 
-        // SIGNAL B: BM25 (USE NORMALIZED for keywords)
+        // SIGNAL B: BM25 (ALWAYS AVAILABLE)
         const searchQuery = normalizedQuery || query;
         const bm25Results = this.engine.search(searchQuery, 10);
         const bm25Map = {};
@@ -156,42 +197,56 @@ class DocumentProcessor {
 
         // Combine Scores
         const candidates = this.qaPairs.map(item => {
-            // Semantic Score (Max of question or its aliases)
-            let semanticScore = this.cosineSimilarity(queryEmbedding, item.embedding);
-            item.aliasEmbeddings.forEach(ae => {
-                const s = this.cosineSimilarity(queryEmbedding, ae);
-                if (s > semanticScore) semanticScore = s;
-            });
-
-            // BM25 Score (Normalized)
+            let finalScore = 0;
+            let semanticScore = 0;
             const rawBM25 = bm25Map[item.id] || 0;
             const normBM25 = rawBM25 / (maxBM25 || 1);
 
-            const finalScore = (this.weights.semantic * semanticScore) + (this.weights.bm25 * normBM25);
-
-            if (finalScore > 0.3) {
-                console.log(`[RAG] Candidate: "${item.question.substring(0, 30)}..." | S: ${semanticScore.toFixed(2)} | B: ${normBM25.toFixed(2)} | F: ${finalScore.toFixed(2)}`);
+            if (this.isSemanticReady && queryEmbedding && item.embedding) {
+                // Semantic Score (Max of question or its aliases)
+                semanticScore = this.cosineSimilarity(queryEmbedding, item.embedding);
+                (item.aliasEmbeddings || []).forEach(ae => {
+                    const s = this.cosineSimilarity(queryEmbedding, ae);
+                    if (s > semanticScore) semanticScore = s;
+                });
+                finalScore = (this.weights.semantic * semanticScore) + (this.weights.bm25 * normBM25);
+            } else {
+                // Fallback to pure BM25 if Semantic failed
+                finalScore = normBM25;
             }
 
-            return { ...item, finalScore };
+            if (finalScore > 0.3) {
+                const modeStr = this.isSemanticReady ? `S: ${semanticScore.toFixed(2)} | B: ${normBM25.toFixed(2)}` : `B: ${normBM25.toFixed(2)}`;
+                console.log(`[RAG] Candidate: "${item.question.substring(0, 30)}..." | ${modeStr} | F: ${finalScore.toFixed(2)}`);
+            }
+
+            return { ...item, finalScore, semanticScore, normBM25 };
         });
 
         candidates.sort((a, b) => b.finalScore - a.finalScore);
 
         const top = candidates[0];
+        if (!top) return null;
+
+        // Confidence threshold check
+        const confidenceThreshold = this.isSemanticReady ? 0.50 : this.bm25Threshold;
+        if (top.finalScore < confidenceThreshold) {
+            return null; 
+        }
+
         const second = candidates[1] || { finalScore: 0 };
         const gap = top.finalScore - second.finalScore;
 
-        // EXTRA SECURITY: If the top semantic score is extremely low, it's a hallucination
-        // We calculate the top candidate's semantic contribution
-        const topSemantic = candidates[0].finalScore; // already weighted
-        if (top.finalScore < 0.50) {
-            return null; // Return null to stay silent on low confidence
+        console.log(`[RAG] Match FOUND (${this.isSemanticReady ? 'Hybrid' : 'Keyword'}): "${top.question}" | Score: ${top.finalScore.toFixed(3)}`);
+
+        // If Keyword only, use simpler gating
+        if (!this.isSemanticReady) {
+            if (top.finalScore > 0.8) return top.answer;
+            if (top.finalScore > 0.6) return `Based on keywords, this might help: \n\n${top.answer}`;
+            return null;
         }
 
-        console.log(`[RAG] Top Match: "${top.question}" | Score: ${top.finalScore.toFixed(3)} | Gap: ${gap.toFixed(3)}`);
-
-        // Gating Logic
+        // Gating Logic for Hybrid Mode
         if (top.finalScore >= this.thresholds.high && gap >= 0.10) {
             return top.answer;
         } 

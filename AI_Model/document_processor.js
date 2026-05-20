@@ -1,6 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-const { pipeline } = require('@xenova/transformers');
+const { pipeline, env } = require('@xenova/transformers');
+
+// Configure Transformers environment to be more silent and handle RAG initialization better
+env.allowLocalModels = true;
+env.allowRemoteModels = true;
+env.useProgressBar = false;
+env.logLevel = 'error'; // Silence the non-fatal "Unable to determine content-length" warning
+
 const bm25 = require('wink-bm25-text-search');
 const nlp = require('wink-nlp-utils');
 

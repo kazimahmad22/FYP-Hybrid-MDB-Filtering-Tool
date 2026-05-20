@@ -28,14 +28,20 @@ let classifier = null;
 natural.BayesClassifier.load(MODEL_PATH, null, function(err, loadedClassifier) {
     if (err) {
         console.error('Failed to load classification model:', err.message);
+        // Start server anyway, but without classification
+        app.listen(PORT, () => {
+            console.log(`Server listening on http://localhost:${PORT} (WARN: Classifier failed)`);
+        });
     } else {
         classifier = loadedClassifier;
         console.log('Classification model loaded.');
+        
+        // 2. Start server only after basic model is ready
+        app.listen(PORT, () => {
+            console.log(`Server listening on http://localhost:${PORT}`);
+        });
     }
 });
-
-// 2. Load the Subject Material handled internally by DocumentProcessor.
-// No longer need separate initSubjectMaterial call here as loadHandout is internal.
 
 // 3. Main Prediction & Auto-Reply Endpoint
 app.post('/predict', async (req, res) => {
@@ -68,6 +74,3 @@ app.post('/predict', async (req, res) => {
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server listening on http://localhost:${PORT}`);
-});

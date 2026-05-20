@@ -5,10 +5,12 @@ package-lock.json
 # AI Model Artifacts
 AI_Model/model.json
 AI_Model/.cache/
+AI_Model/verify_advanced.js
 
 # Environment & Private Files
 .env
 *.pem
+# *.pfi
 
 # OS/IDEs
 .DS_Store
@@ -25,17 +27,17 @@ Thumbs.db
 implementation_plan.md
 task.md
 walkthrough.md
+AI_SYSTEM_SOP.md
 AI_System_Architecture.md
+project_design_system.md
 New Approach for Ai reply.md
 *.log
 
 # Test Scripts
-test_rag.js
-test_similarity.js
-test_classification.js
-inspect_nlp.js
+AI_Model/test_*.js
+AI_Model/inspect_*.js
 
-# Legacy/Obsolete Proto
+# Legacy/Obsolete folders
 prototype/
 Explaination/
 cleanup_report.md
